@@ -1,12 +1,10 @@
----
-title: 'How to set up a local Knative environment with KinD and without DNS headaches'
-author: Leon Stigter
-author handle: https://twitter.com/retgits
-date: 2020-06-03
-description: A how-to guide to deploy Knative, Kourier, and your first app on top of a Kubernetes cluster.
-folder with media files: 'N/A'
-labels: Articles
----
+# How to set up a local Knative environment with KinD and without DNS headaches
+
+**Author: [Leon Stigter](https://twitter.com/retgits), Product @ AWS Cloud**
+
+!!! warning
+
+    The [quickstart plugin](https://knative.dev/docs/getting-started/quickstart-install/) is now the recommended way to set up a local Knative environment for development purposes.
 
 Knative builds on Kubernetes to abstract away complexity for developers, and enables them to focus on delivering value to their business. The complex (and sometimes boring) parts of building apps to run on Kubernetes are managed by Knative. In this post, we will focus on setting up a lightweight environment to help you to develop modern apps faster using Knative.
 
@@ -30,7 +28,7 @@ apiVersion: kind.sigs.k8s.io/v1alpha4
 nodes:
 - role: control-plane
   extraPortMappings:
-	## expose port 31380 of the node to port 80 on the host
+	## expose port 31080 of the node to port 80 on the host
   - containerPort: 31080
     hostPort: 80
 	## expose port 31443 of the node to port 443 on the host
@@ -282,7 +280,7 @@ CONTAINER ID        IMAGE                  COMMAND                  CREATED     
 d53c275d7461        kindest/node:v1.18.2   "/usr/local/bin/entr…"   4 hours ago         Up 4 hours          127.0.0.1:49350->6443/tcp, 0.0.0.0:80->31080/tcp, 0.0.0.0:443->31443/tcp   knative-control-plane
 ```
 
-The ports, and how they’re tied to the host, should be the same as you’ve defined in the clusterconfig file. For example, port 31380 in the cluster is exposed as port 80.
+The ports, and how they’re tied to the host, should be the same as you’ve defined in the clusterconfig file. For example, port 31080 in the cluster is exposed as port 80.
 
 ## Step 4: Deploying your first app
 Now that the cluster, Knative, and the networking components are ready, you can deploy an app.
@@ -300,7 +298,7 @@ spec:
   template:
     spec:
       containers:
-        - image: gcr.io/knative-samples/helloworld-go # The URL to the image of the app
+        - image: ghcr.io/knative/helloworld-go:latest # The URL to the image of the app
           env:
             - name: TARGET # The environment variable printed out by the sample app
               value: "Hello Knative Serving is up and running with Kourier!!"

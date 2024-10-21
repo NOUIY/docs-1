@@ -9,7 +9,7 @@ The KPA acts on [metrics](autoscaling-metrics.md) (`concurrency` or `rps`) aggre
 These windows define the amount of historical data that the Autoscaler takes into account, and are used to smooth the data over the specified amount of time.
 The shorter these windows are, the more quickly the Autoscaler will react.
 
-The KPA's implementation has two modes: **stable** and **panic**.
+The KPA's implementation has two modes: **stable** and **panic**. There are separate aggregate windows for each mode: `stable-window` and `panic-window`, respectively.
 
 Stable mode is used for general operation, while panic mode by default has a much shorter window, and will be used to quickly scale a revision up if a burst of traffic arrives.
 
@@ -42,7 +42,7 @@ Stable mode is used for general operation, while panic mode by default has a muc
             autoscaling.knative.dev/window: "40s"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 === "Global (ConfigMap)"
@@ -98,7 +98,7 @@ This value indicates how the window over which historical data is evaluated will
             autoscaling.knative.dev/panic-window-percentage: "20.0"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 === "Global (ConfigMap)"
@@ -136,7 +136,7 @@ This value is a percentage of the traffic that the current amount of replicas ca
 !!! note
     A value of `100.0` (100 percent) means that the Autoscaler is always in panic mode, therefore the  minimum value should be higher than `100.0`.
 
-The default setting of `200.0` means that panic mode will be start if traffic is twice as high as the current replica population can handle.
+The default setting of `200.0` means that panic mode will be started if traffic is twice as high as the current replica population can handle.
 
 * **Global key:** `panic-threshold-percentage`
 * **Per-revision annotation key:** `autoscaling.knative.dev/panic-threshold-percentage`
@@ -159,7 +159,7 @@ The default setting of `200.0` means that panic mode will be start if traffic is
             autoscaling.knative.dev/panic-threshold-percentage: "150.0"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 === "Global (ConfigMap)"

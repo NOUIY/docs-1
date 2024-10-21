@@ -52,9 +52,6 @@ data:
   # for the queue proxy sidecar container.
   # If omitted, no value is specified and the system default is used.
   queue-sidecar-ephemeral-storage-limit: "1024Mi"
-  # concurrency-state-endpoint is the endpoint that queue-proxy calls when its traffic drops to zero or
-  # scales up from zero.
-  concurrency-state-endpoint: ""
 ```
 
 ## Configuring progress deadlines
@@ -73,21 +70,45 @@ You may want to configure this setting as a higher value if any of the following
 
 See the [Kubernetes documentation](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#progress-deadline-seconds) for more information.
 
-The following example shows a snippet of an example Deployment Config Map that sets this value to 10 minutes:
+Progress deadline setting can be configured at global level through a ConfigMap or at the per-revision level using an annotation.
 
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-deployment
-  namespace: knative-serving
-  labels:
-    serving.knative.dev/release: devel
-  annotations:
-    knative.dev/example-checksum: "fa67b403"
-data:
-  progress-deadline: "10m"
-```
+* **Global key:** `progress-deadline`
+* **Per-revision annotation key:** `serving.knative.dev/progress-deadline`
+* **Possible values:** `time.Duration`
+* **Default:** `"600s"`
+
+**Example:**
+
+=== "Global (ConfigMap)"
+    ```yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: config-deployment
+      namespace: knative-serving
+      labels:
+        serving.knative.dev/release: devel
+      annotations:
+        knative.dev/example-checksum: "fa67b403"
+    data:
+      progress-deadline: "10m"
+    ```
+
+=== "Per Revision"
+    ```yaml
+    apiVersion: serving.knative.dev/v1
+    kind: Service
+    metadata:
+      name: helloworld-go
+    spec:
+      template:
+        metadata:
+          annotations:
+            serving.knative.dev/progress-deadline: "60s" 
+        spec:
+          containers:
+            - image: ghcr.io/knative/helloworld-go:latest
+    ```
 
 ## Skipping tag resolution
 
@@ -110,24 +131,46 @@ data:
   registries-skipping-tag-resolving: registry.example.com
 ```
 
-## Enable container-freezer service
+## Configuring selectable RuntimeClassName
 
-You can configure queue-proxy to pause pods when not in use by enabling the `container-freezer` service. It calls a stand-alone service (via a user-specified endpoint) when a pod's traffic drops to zero or scales up from zero. To enable it, set `concurrency-state-endpoint` to a non-empty value. With this configuration, you can achieve some features like freezing running processes in pods or billing based on the time it takes to process the requests.
+You can configure Knative Serving to configure deployments with a specified RuntimeClassName (`Pod.Spec.RuntimeClassName`) by modifying the `runtime-class-name` setting.
 
-Before you configure this, you need to implement the endpoint API. The official implementation is container-freezer. You can install it by following the installation instructions in the [container-freezer README](https://github.com/knative-sandbox/container-freezer).
+The setting works with Service labels and will configure either a default or one where the most labels match.
 
-The following example shows how to enable the container-freezer service. When using `$HOST_IP`, the container-freezer service inserts the appropriate value for each node at runtime:
+**Example:**
 
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: config-deployment
-  namespace: knative-serving
-  labels:
-    serving.knative.dev/release: devel
-  annotations:
-    knative.dev/example-checksum: "fa67b403"
-data:
-  concurrency-state-endpoint: "http://$HOST_IP:9696"
-```
+=== "Global (ConfigMap)"
+    ```yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: config-deployment
+      namespace: knative-serving
+    data:
+      runtime-class-name: |
+        kata: {}
+        gvisor:
+          selector:
+            my-label: selector
+    ```
+
+=== "Operator"
+    ```yaml
+    apiVersion: operator.knative.dev/v1beta1
+    kind: KnativeServing
+    metadata:
+      name: knative-serving
+      namespace: knative-serving
+    spec:
+      config:
+        deployment:
+          runtime-class-name: |
+            kata: {}
+            gvisor:
+              selector:
+                my-label: selector
+    ```
+
+See [Kubernetes RuntimeClass](https://kubernetes.io/docs/concepts/containers/runtime-class/) docs for more information.
+
+Separately, there is a feature flag to allow [manual configuration of RuntimeClassName](/docs/serving/configuration/feature-flags/#kubernetes-runtime-class).

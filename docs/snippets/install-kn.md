@@ -1,3 +1,11 @@
+<!-- Snippet used in the following topics:
+- /docs/client/install-kn.md
+- /docs/getting-started/quickstart-install.md
+- docs/install/quickstart-install.md
+-->
+
+## Install the Knative CLI
+
 The Knative CLI (`kn`) provides a quick and easy interface for creating Knative resources, such as Knative Services and Event Sources, without the need to create or modify YAML files directly.
 
 The `kn` CLI also simplifies completion of otherwise complex procedures such as autoscaling and traffic splitting.
@@ -6,16 +14,10 @@ The `kn` CLI also simplifies completion of otherwise complex procedures such as 
 
     Do one of the following:
 
-    - To install `kn` by using [Homebrew](https://brew.sh){target=_blank}, run the command:
+    - To install `kn` by using [Homebrew](https://brew.sh){target=_blank}, run the command (Use `brew upgrade` instead if you are upgrading from a previous version):
 
         ```bash
-        brew install kn
-        ```
-
-    - To upgrade an existing `kn` install to the latest version, run the command:
-
-        ```bash
-        brew upgrade kn
+        brew install knative/client/kn
         ```
 
         ??? bug "Having issues upgrading `kn` using Homebrew?"
@@ -23,14 +25,14 @@ The `kn` CLI also simplifies completion of otherwise complex procedures such as 
             If you are having issues upgrading using Homebrew, it might be due to a change to a CLI repository where the `master` branch was renamed to `main`. Resolve this issue by running the command:
 
             ```bash
-            brew tap --repair
-            brew update
-            brew upgrade kn
+            brew uninstall kn
+            brew untap knative/client --force
+            brew install knative/client/kn
             ```
 
 === "Using a binary"
 
-    You can install `kn` by downloading the executable binary for your system and placing it in the system path. Note that you will need `kn` v0.25 or later.
+    You can install `kn` by downloading the executable binary for your system and placing it in the system path.
 
     1. Download the binary for your system from the [`kn` release page](https://github.com/knative/client/releases){target=_blank}.
 
@@ -43,13 +45,13 @@ The `kn` CLI also simplifies completion of otherwise complex procedures such as 
 
         Where `<path-to-binary-file>` is the path to the binary file you downloaded in the previous step, for example, `kn-darwin-amd64` or `kn-linux-amd64`.
 
-    1. Move the executable binary file to a directory on your PATH by running the command:
+    1. Move the executable binary file to a directory on your `PATH` by running the command:
 
         ```bash
         mv kn /usr/local/bin
         ```
 
-    1. Verify that the plugin is working by running the command:
+    1. Verify that `kn` commands are working properly. For example:
 
         ```bash
         kn version
@@ -59,22 +61,28 @@ The `kn` CLI also simplifies completion of otherwise complex procedures such as 
 
     1. Check out the `kn` client repository:
 
-          ```bash
-          git clone https://github.com/knative/client.git
-          cd client/
-          ```
+        ```bash
+        git clone https://github.com/knative/client.git
+        cd client/
+        ```
 
     1. Build an executable binary:
 
-          ```bash
-          hack/build.sh -f
-          ```
+        ```bash
+        hack/build.sh -f
+        ```
 
-    1. Move `kn` into your system path, and verify that `kn` commands are working properly. For example:
+    1. Move the executable binary file to a directory on your `PATH` by running the command:
 
-          ```bash
-          kn version
-          ```
+        ```bash
+        mv kn /usr/local/bin
+        ```
+
+    1. Verify that `kn` commands are working properly. For example:
+
+        ```bash
+        kn version
+        ```
 
 === "Using a container image"
 

@@ -7,7 +7,7 @@ You can create a Knative service by applying a YAML file or using the `kn servic
 To create a Knative service, you will need:
 
 * A Kubernetes cluster with Knative Serving installed. For more information, see [Installing Knative Serving](../../install/yaml-install/serving/install-serving-with-yaml.md).
-* Optional: To use the `kn service create` command, you must [install the `kn` CLI](../../install/client/configure-kn.md).
+* Optional: To use the `kn service create` command, you must [install the `kn` CLI](../../client/configure-kn.md).
 
 ## Procedure
 
@@ -31,7 +31,7 @@ Create a sample service:
           template:
             spec:
               containers:
-                - image: gcr.io/knative-samples/helloworld-go
+                - image: ghcr.io/knative/helloworld-go:latest
                   env:
                     - name: TARGET
                       value: "Go Sample v1"
@@ -47,7 +47,7 @@ Create a sample service:
 === "kn CLI"
 
     ```
-    kn service create helloworld-go --image gcr.io/knative-samples/helloworld-go
+    kn service create helloworld-go --image ghcr.io/knative/helloworld-go:latest
     ```
 
 After the service has been created, Knative performs the following tasks:

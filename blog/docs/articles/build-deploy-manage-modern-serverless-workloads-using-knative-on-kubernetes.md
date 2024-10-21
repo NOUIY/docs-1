@@ -1,10 +1,6 @@
----
-title: "Build, deploy, manage modern serverless workloads using Knative on Kubernetes"
-linkTitle: "Serverless workloads using Knative"
-date: 2018-11-14
-description: "Learn how to build, deploy, and manage modern serverless workloads using Knative on Kubernetes."
-type: "blog"
----
+# Serverless workloads using Knative
+
+**Author: [Mark Chmarny](https://twitter.com/mchmarny), TL for Cloud OSS @Google**
 
   <article class="h-entry">
     <section data-field="description" class="p-summary">

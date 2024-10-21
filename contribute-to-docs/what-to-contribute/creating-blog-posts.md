@@ -12,7 +12,7 @@ This section covers documentation, processes, and roles for the [Knative blog](h
 
 ## Contact
 
-- Slack: [#docs](https://knative.slack.com/archives/C9CV04DNJ)
+- Slack: [#knative-documentation](https://cloud-native.slack.com/archives/C04LY5G9ED7)
 
 ## Submit a Post
 
@@ -27,7 +27,7 @@ To submit a blog post:
 1. Update the navigation files as described on the [Updating the Blog](https://github.com/knative/docs/blob/main/blog/README.md) page.
 1. Open a pull request (PR) for your blog post.
 1. A reviewer is assigned to all pull requests automatically. The reviewer checks your submission, and works with you on feedback and final details. When the pull request is approved, the blog will be scheduled for publication.
-1. Ping editorial team members on Slack [#docs](https://knative.slack.com/archives/C9CV04DNJ) channel with a link to your recently created PR.
+1. Ping editorial team members on Slack [#knative-documentation](https://cloud-native.slack.com/archives/C04LY5G9ED7) channel with a link to your recently created PR.
 
 ## Blog Guidelines
 
@@ -44,7 +44,7 @@ To submit a blog post:
 - Vendor pitches
 
 ## Communicating new project releases
-**Scheduled releases:** The Knative project has a release every 6 weeks, and we need your help communicating new changes to our community! If you would like to contribute a blog post to the Knative blog, please consider writing about the latest changes to the project. Ideally, there should be a single blog post for every release version, for example, 0.17; 0.18; 0.19. The title convention should be: *Version [version number] release - [date]*. Release blog contributors should write a summary of the changes and select up to 3 highlights of the current release to write about.
+**Scheduled releases:** The Knative project has a release every 3 months, and we need your help communicating new changes to our community! If you would like to contribute a blog post to the Knative blog, please consider writing about the latest changes to the project. Ideally, there should be a single blog post for every release version, for example, 1.8; 1.9; 1.10. The title convention should be: *Version [version number] release - [date]*. Release blog contributors should write a summary of the changes and select up to 3 highlights of the current release to write about.
 **Big changes to the project.** Big changes to the project require a deep dive blog that describes the new feature in detail and give examples of the new functionality.
 
 ## Review Process

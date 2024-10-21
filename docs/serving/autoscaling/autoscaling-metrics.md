@@ -15,11 +15,11 @@ The possible metric types that can be configured per revision depend on the type
 For more information about KPA and HPA, see the documentation on [Supported Autoscaler types](autoscaler-types.md).
 
 * **Per-revision annotation key:** `autoscaling.knative.dev/metric`
-* **Possible values:** `"concurrency"`, `"rps"`, `"cpu"`, `"memory"` or any custom metric name, depending on your Autoscaler type. The `"cpu"`, `"memory"`, and `"custom"` metrics are only supported on revisions that use the HPA class.
+* **Possible values:** `"concurrency"`, `"rps"`, `"cpu"`, `"memory"` or any custom metric name, depending on your Autoscaler type. The `"cpu"`, `"memory"`, and custom metrics are supported on revisions that use the HPA class.
 * **Default:** `"concurrency"`
 
 
-=== "Per-revision concurrency configuration"
+=== "Concurrency"
 
     ```yaml
     apiVersion: serving.knative.dev/v1
@@ -32,9 +32,12 @@ For more information about KPA and HPA, see the documentation on [Supported Auto
         metadata:
           annotations:
             autoscaling.knative.dev/metric: "concurrency"
+            autoscaling.knative.dev/target-utilization-percentage: "70" 
     ```
+    !!! note
+        The `autoscaling.knative.dev/target-utilization-percentage` annotation for "Concurrency" specifies a percentage value. See [Configuring targets](autoscaling-targets.md) for more details.
 
-=== "Per-revision rps configuration"
+=== "Requests per second"
 
     ```yaml
     apiVersion: serving.knative.dev/v1
@@ -47,9 +50,12 @@ For more information about KPA and HPA, see the documentation on [Supported Auto
         metadata:
           annotations:
             autoscaling.knative.dev/metric: "rps"
+            autoscaling.knative.dev/target: "150"
     ```
+    !!! note
+        The `autoscaling.knative.dev/target` annotation for "Requests per second" specifies an integer value. See [Configuring targets](autoscaling-targets.md) for more details.
 
-=== "Per-revision cpu configuration"
+=== "CPU"
 
     ```yaml
     apiVersion: serving.knative.dev/v1
@@ -63,9 +69,12 @@ For more information about KPA and HPA, see the documentation on [Supported Auto
           annotations:
             autoscaling.knative.dev/class: "hpa.autoscaling.knative.dev"
             autoscaling.knative.dev/metric: "cpu"
+            autoscaling.knative.dev/target: "100"
     ```
+    !!! note
+        The `autoscaling.knative.dev/target` annotation for "CPU" specifies the integer value in millicore. See [Configuring targets](autoscaling-targets.md) for more details.
 
-=== "Per-revision memory configuration"
+=== "Memory"
 
     ```yaml
     apiVersion: serving.knative.dev/v1
@@ -79,9 +88,12 @@ For more information about KPA and HPA, see the documentation on [Supported Auto
           annotations:
             autoscaling.knative.dev/class: "hpa.autoscaling.knative.dev"
             autoscaling.knative.dev/metric: "memory"
+            autoscaling.knative.dev/target: "75"
     ```
+    !!! note
+        The `autoscaling.knative.dev/target` annotation for "Memory" specifies the integer value in Mi. See [Configuring targets](autoscaling-targets.md) for more details.
 
-=== "Per-revision custom metric configuration"
+=== "Custom metric"
 
     You can create an HPA to scale the revision by a metric that you specify.
     The HPA will be configured to use the **average value** of your metric over all the Pods of the revision.
@@ -98,6 +110,7 @@ For more information about KPA and HPA, see the documentation on [Supported Auto
           annotations:
             autoscaling.knative.dev/class: "hpa.autoscaling.knative.dev"
             autoscaling.knative.dev/metric: "<metric-name>"
+            autoscaling.knative.dev/target: "<target>"
     ```
 
     Where `<metric-name>` is your custom metric.

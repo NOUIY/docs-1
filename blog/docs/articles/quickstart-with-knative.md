@@ -1,13 +1,8 @@
----
-title: Announcing the Knative Quickstart plugin
-linkTitle: Knative Quickstart
-author: "Paul Schweigert, Senior Software Engineer @ IBM"
-date: 2021-09-17
-description: Knative quickstart is a plugin for the Knative client that enables users to quick set up a local Knative environment from the command line
-type: "blog"
----
+# Announcing the Knative Quickstart plugin
 
-We're pleased to announce that the [`quickstart` plugin](https://github.com/knative-sandbox/kn-plugin-quickstart) for the Knative client is now available. The plugin allows users to very easily set up a local Knative environment with just a single command using a local [KinD](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/) cluster.
+**Author: Paul Schweigert, Senior Software Engineer @ IBM**
+
+We're pleased to announce that the [`quickstart` plugin](https://github.com/knative-extensions/kn-plugin-quickstart) for the Knative client is now available. The plugin allows users to very easily set up a local Knative environment with just a single command using a local [KinD](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/) cluster.
 
 ```
 $ kn quickstart kind
@@ -47,7 +42,7 @@ $ kn quickstart kind
 
 Use the Knative client to create a Knative service:
 ```
-$ kn service create hello --image gcr.io/knative-samples/helloworld-go
+$ kn service create hello --image ghcr.io/knative/helloworld-go:latest
 ```
 
 Ready to try it out? Head over to the [Getting Started with Knative](https://knative.dev/docs/getting-started/) guide to learn how to download the plugin and get started with Knative!

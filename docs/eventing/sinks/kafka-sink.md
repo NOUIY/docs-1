@@ -1,6 +1,6 @@
-# Apache Kafka Sink
+# Knative Sink for Apache Kafka
 
-This page shows how to install and configure an Apache KafkaSink.
+The `KafkaSink` is an Apache Kafka-native [Sink implementation](https://knative.dev/docs/eventing/sinks/) persisting the incoming CloudEvent to a configurable Apache Kafka Topic. This page shows how to install and configure the Knative `KafkaSink`.
 
 ## Prerequisites
 
@@ -11,13 +11,13 @@ You must have access to a Kubernetes cluster with [Knative Eventing installed](.
 1. Install the Kafka controller:
 
     ```bash
-    kubectl apply -f {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
+    kubectl apply -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
     ```
 
 1. Install the KafkaSink data plane:
 
     ```bash
-    kubectl apply -f {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-sink.yaml") }}
+    kubectl apply -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-sink.yaml") }}
     ```
 
 1. Verify that `kafka-controller` and `kafka-sink-receiver` Deployments are running:
@@ -86,12 +86,12 @@ spec:
   # - structured
   # - binary
   #
-  # default: structured.
+  # default: binary.
   #
   # CloudEvent spec references:
-  # - https://github.com/cloudevents/spec/blob/v1.0.1/spec.md#message
-  #	- https://github.com/cloudevents/spec/blob/v1.0.1/kafka-protocol-binding.md#33-structured-content-mode
-  #	- https://github.com/cloudevents/spec/blob/v1.0.1/kafka-protocol-binding.md#32-binary-content-mode
+  # - https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#message
+  #	- https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/bindings/kafka-protocol-binding.md#33-structured-content-mode
+  #	- https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/bindings/kafka-protocol-binding.md#32-binary-content-mode
   contentMode: binary # or structured
 ```
 

@@ -3,6 +3,7 @@
 This topic describes how to install Knative Serving by applying YAML files using the `kubectl` CLI.
 
 --8<-- "prerequisites.md"
+{% include "security-prereqs-images.md" %}
 
 ## Install the Knative Serving component
 
@@ -27,6 +28,10 @@ To install the Knative Serving component:
 
 The following tabs expand to show instructions for installing a networking layer.
 Follow the procedure for the networking layer of your choice:
+
+!!! note
+    **Only Kourier network plugin supported for IBM Z and IBM Power platform.** 
+    Follow the below steps to install Kourier. Post installation, patch the envoy image based on RedHat Maistra as described in [this link](./install-serving-with-yaml-on-IBM-Z-and-IBM-P.md).
 
 <!-- TODO: Link to document/diagram describing what is a networking layer.  -->
 <!-- This indentation is important for things to render properly. -->
@@ -95,7 +100,7 @@ Follow the procedure for the networking layer of your choice:
         ```bash
         kubectl apply -f {{ artifact(repo="net-contour",file="contour.yaml")}}
         ```
-        <!-- TODO(https://github.com/knative-sandbox/net-contour/issues/11): We need a guide on how to use/modify a pre-existing install. -->
+        <!-- TODO(https://github.com/knative-extensions/net-contour/issues/11): We need a guide on how to use/modify a pre-existing install. -->
 
     1. Install the Knative Contour controller by running the command:
       ```bash
@@ -143,10 +148,11 @@ Follow the procedure for the networking layer of your choice:
     webhook-859796bc7-8n5g2                   1/1     Running   0          96s
     ```
 
+## Configure DNS
 <!-- These are snippets from the docs/snippets directory -->
 {% include "dns.md" %}
 {% include "real-dns-yaml.md" %}
-{% include "temporary-dns.md" %}
+{% include "no-dns.md" %}
 
 ## Install optional Serving extensions
 
@@ -165,48 +171,8 @@ The following tabs expand to show instructions for installing each Serving exten
 
     <!-- TODO(https://github.com/knative/docs/issues/2152): Link to a more in-depth guide on HPA-class autoscaling -->
 
-=== "TLS with cert-manager"
+=== "Knative encryption with cert-manager"
 
-    Knative supports automatically provisioning TLS certificates through
-    [cert-manager](https://cert-manager.io/docs/). The following commands
-    install the components needed to support the provisioning of TLS certificates
-    through cert-manager.
-
-    1. Install [cert-manager version v1.0.0 or later](../../installing-cert-manager.md).
-
-    1. Install the component that integrates Knative with `cert-manager` by running the command:
-
-        ```bash
-        kubectl apply -f {{ artifact(repo="net-certmanager",file="release.yaml")}}
-        ```
-
-    1. Configure Knative to automatically configure TLS certificates by following the steps in
-    [Enabling automatic TLS certificate provisioning](../../../serving/using-auto-tls.md).
-
-=== "TLS with HTTP01"
-
-    Knative supports automatically provisioning TLS certificates using Encrypt HTTP01 challenges. The following commands install the components needed to support TLS.
-
-    1. Install the net-http01 controller by running the command:
-
-        ```bash
-        kubectl apply -f {{ artifact(repo="net-http01",file="release.yaml")}}
-        ```
-
-    2. Configure the `certificate-class` to use this certificate type by running the command:
-
-        ```bash
-        kubectl patch configmap/config-network \
-          --namespace knative-serving \
-          --type merge \
-          --patch '{"data":{"certificate-class":"net-http01.certificate.networking.knative.dev"}}'
-        ```
-
-    3. Enable autoTLS by running the command:
-
-        ```bash
-        kubectl patch configmap/config-network \
-          --namespace knative-serving \
-          --type merge \
-          --patch '{"data":{"auto-tls":"Enabled"}}'
-        ```
+    Knative supports encryption features through  [cert-manager](https://cert-manager.io/docs/).
+    Follow the documentation in [Serving encryption](../../../serving/encryption/encryption-overview.md)
+    for more information.

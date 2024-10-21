@@ -34,7 +34,7 @@ Knative will attempt to never have less than this number of replicas at any one 
             autoscaling.knative.dev/min-scale: "3"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 === "Global (ConfigMap)"
@@ -93,7 +93,7 @@ When `max-scale-limit` is set to a positive value, a revision with a max scale a
             autoscaling.knative.dev/max-scale: "3"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 
@@ -154,7 +154,7 @@ When the Revision is created, the larger of initial scale and lower bound is aut
             autoscaling.knative.dev/initial-scale: "0"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 === "Global (ConfigMap)"
@@ -180,6 +180,38 @@ When the Revision is created, the larger of initial scale and lower bound is aut
         autoscaler:
           initial-scale: "0"
           allow-zero-initial-scale: "true"
+    ```
+
+## Scale Up Minimum
+
+This value controls the minimum number of replicas that will be created when the Revision scales up from zero.
+After the Revision has reached this scale one time, this value is ignored. This means that the Revision will scale down after the activation scale is reached if the actual traffic received needs a smaller scale.
+
+When the Revision is created, the larger of activation scale and lower bound is automatically chosen as the initial target scale.
+
+* **Global key:** n/a
+* **Per-revision annotation key:** `autoscaling.knative.dev/activation-scale`
+* **Possible values:** integer
+* **Default:** `1`
+
+
+**Example:**
+
+=== "Per Revision"
+    ```yaml
+    apiVersion: serving.knative.dev/v1
+    kind: Service
+    metadata:
+      name: helloworld-go
+      namespace: default
+    spec:
+      template:
+        metadata:
+          annotations:
+            autoscaling.knative.dev/activation-scale: "5"
+        spec:
+          containers:
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 ## Scale Down Delay
@@ -214,7 +246,7 @@ delay period.
             autoscaling.knative.dev/scale-down-delay: "15m"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 === "Global (ConfigMap)"
@@ -267,7 +299,7 @@ The stable window defines the sliding time window over which metrics are average
             autoscaling.knative.dev/window: "40s"
         spec:
           containers:
-            - image: gcr.io/knative-samples/helloworld-go
+            - image: ghcr.io/knative/helloworld-go:latest
     ```
 
 === "Global (ConfigMap)"

@@ -1,10 +1,6 @@
----
-title: "ko: fast Kubernetes microservice development in Go"
-linkTitle: "ko for microservice development"
-date: 2018-12-18
-description: "Using ko for fast microservices development in Kubernetes."
-type: "blog"
----
+# ko: fast Kubernetes microservice development in Go
+
+**Author: [Matt Moore](https://twitter.com/mattomata), Founder/CTO @ Chainguard**
 
   <article class="h-entry">
     <section data-field="body" class="e-content">

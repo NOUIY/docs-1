@@ -92,7 +92,7 @@ cd knative-docs/code-samples/serving/hello-world/helloworld-kotlin
    ```docker
    # Use the official gradle image to create a build artifact.
    # https://hub.docker.com/_/gradle
-   FROM gradle:6.7 as builder
+   FROM gradle:6.7 AS builder
 
    # Copy local code to the container image.
    COPY build.gradle .
@@ -143,11 +143,8 @@ folder) you're ready to build and deploy the sample app.
    username:
 
    ```bash
-   # Build the container on your local machine
-   docker build -t {username}/helloworld-kotlin .
-
-   # Push the container to docker registry
-   docker push {username}/helloworld-kotlin
+   # Build and push the container on your local machine.
+   docker buildx build --platform linux/arm64,linux/amd64 -t "{username}/helloworld-kotlin" --push .
    ```
 
 1. After the build has completed and the container is pushed to docker hub, you

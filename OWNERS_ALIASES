@@ -2,213 +2,142 @@
 # Do not modify this file, instead modify peribolos/knative.yaml
 
 aliases:
-  api-core-wg-leads:
-  - dprotaso
-  autoscaling-reviewers:
-  - nader-ziada
-  - psschwei
-  - skonto
-  - taragu
-  autoscaling-wg-leads:
-  - julz
-  autoscaling-writers:
-  - julz
-  - yanweiguo
   client-reviewers:
   - itsmurugappan
   client-wg-leads:
   - dsimansk
-  - navidshaikh
   - rhuss
   client-writers:
   - dsimansk
-  - maximilien
-  - navidshaikh
   - rhuss
-  conformance-task-force-leads:
-  - omerbensaadon
-  - salaboy
-  conformance-writers:
-  - omerbensaadon
-  - salaboy
+  - vyasgun
   docs-reviewers:
   - nainaz
-  - omerbensaadon
-  - pmbanugo
-  - snneji
-  docs-wg-leads:
-  - csantanapr
-  - snneji
+  - retocode
+  - skonto
   docs-writers:
-  - abrennan89
   - csantanapr
-  - psschwei
-  - snneji
+  - retocode
+  - skonto
   eventing-reviewers:
+  - Leo6Leo
   - aslom
-  - tayarani
-  - tommyreddad
-  eventing-triage:
-  - akashrv
-  - antoineco
-  - lberk
+  - cali0707
+  - creydr
   eventing-wg-leads:
-  - lionelvillard
   - pierDipi
   eventing-writers:
-  - akashrv
+  - Leo6Leo
   - aliok
-  - antoineco
-  - lberk
+  - cali0707
+  - creydr
   - lionelvillard
   - matzew
-  - odacremolbap
   - pierDipi
+  func-reviewers:
+  - jrangelramos
+  - nainaz
+  func-writers:
+  - gauron99
+  - jrangelramos
+  - lance
+  - lkingland
+  - matejvasek
+  - matzew
+  - salaboy
+  functions-wg-leads:
+  - lkingland
+  - salaboy
   knative-admin:
-  - csantanapr
+  - aliok
+  - cardil
+  - davidhadas
   - dprotaso
+  - dsimansk
   - evankanderson
-  - ikvmw
-  - itsmurugappan
-  - julz
   - knative-automation
   - knative-prow-releaser-robot
   - knative-prow-robot
   - knative-prow-updater-robot
   - knative-test-reporter-robot
-  - lance
-  - nader-ziada
-  - pmorie
-  - rhuss
-  - smoser-ibm
-  - spencerdillard
-  - thisisnotapril
-  - vaikas
+  - nainaz
+  - psschwei
+  - retocode
+  - salaboy
+  - skonto
+  - upodroid
   knative-release-leads:
-  - ikvmw
-  - nader-ziada
+  - dsimansk
+  - retocode
+  - skonto
   knative-robots:
   - knative-automation
   - knative-prow-releaser-robot
   - knative-prow-robot
   - knative-prow-updater-robot
   - knative-test-reporter-robot
-  networking-reviewers:
-  - JRBANCEL
-  - ZhiminXiang
-  - andrew-su
-  - arturenault
-  - carlisia
-  - nak3
-  - shashwathi
-  - tcnghia
-  - vagababov
-  - yanweiguo
-  networking-wg-leads:
-  - ZhiminXiang
-  - nak3
-  networking-writers:
-  - JRBANCEL
-  - ZhiminXiang
-  - nak3
-  - vagababov
   operations-reviewers:
-  - Cynocracy
   - aliok
   - houshengbo
-  - jcrossley3
   - matzew
-  - maximilien
-  - trshafer
   operations-wg-leads:
   - houshengbo
   operations-writers:
-  - Cynocracy
   - aliok
   - houshengbo
-  - jcrossley3
   - matzew
-  - maximilien
-  - trshafer
-  pkg-configmap-reviewers:
-  - dprotaso
-  - mattmoor
-  - vagababov
-  pkg-configmap-writers:
-  - dprotaso
-  - mattmoor
-  - vagababov
-  pkg-controller-reviewers:
-  - dprotaso
-  - mattmoor
-  - tcnghia
-  - vagababov
-  - whaught
-  pkg-controller-writers:
-  - dprotaso
-  - mattmoor
-  - tcnghia
-  - vagababov
+  productivity-leads:
+  - cardil
+  - upodroid
   productivity-reviewers:
-  - albertomilan
   - evankanderson
-  - gerardo-lc
   - mgencur
-  - shinigambit
   productivity-wg-leads:
-  - chizhg
-  - kvmware
+  - cardil
+  - upodroid
   productivity-writers:
   - cardil
-  - chaodaiG
-  - chizhg
-  - coryrc
-  - kvmware
-  - psschwei
   - upodroid
   security-wg-leads:
+  - davidhadas
   - evankanderson
-  - julz
   security-writers:
+  - davidhadas
   - evankanderson
-  - julz
-  serving-observability-reviewers:
+  serving-approvers:
+  - ReToCode
   - skonto
-  - yanweiguo
-  serving-observability-writers:
-  - yanweiguo
   serving-reviewers:
-  - carlisia
-  - julz
-  - nader-ziada
-  - nealhu
-  - psschwei
+  - izabelacg
+  - retocode
   - skonto
-  - whaught
+  serving-triage:
+  - izabelacg
+  - retocode
+  - skonto
+  serving-wg-leads:
+  - dprotaso
   serving-writers:
+  - ReToCode
   - dprotaso
-  - julz
-  - tcnghia
-  - vagababov
+  - skonto
   steering-committee:
-  - csantanapr
-  - itsmurugappan
-  - lance
-  - pmorie
-  - thisisnotapril
-  - vaikas
-  technical-oversight-committee:
+  - aliok
+  - davidhadas
   - dprotaso
+  - dsimansk
   - evankanderson
-  - julz
-  - rhuss
-  trademark-committee:
-  - evankanderson
-  - smoser-ibm
-  - spencerdillard
+  - nainaz
+  - psschwei
+  - salaboy
+  technical-oversight-committee: []
   ux-wg-leads:
-  - csantanapr
-  - snneji
+  - cali0707
+  - leo6leo
+  - mmejia02
+  - zainabhusain227
   ux-writers:
-  - csantanapr
-  - snneji
+  - cali0707
+  - leo6leo
+  - mmejia02
+  - zainabhusain227

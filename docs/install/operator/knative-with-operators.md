@@ -1,15 +1,27 @@
-# Installing Knative using the Operator
+# Install by using the Knative Operator
 
 Knative provides a [Kubernetes Operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) to install, configure and manage Knative.
 You can install the Serving component, Eventing component, or both on your cluster.
 
+The following table describes the supported versions of Serving and Eventing for the Knative Operator:
+
+| Operator | Serving                                                                                                             | Eventing                                                                                                                                                                                                                        |
+|----------|---------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| v1.15    | v1.15.0<br/>v1.14.0 and v1.14.1<br/>v1.13.0, v1.13.1 and v1.13.2<br/>v1.12.0, v1.12.1, v1.12.2, v1.12.3 and v1.12.4 | v1.15.0<br/>v1.14.0, v1.14.1, v1.14.2, v1.14.3, v1.14.4 and v1.14.5<br/>v1.13.0, v1.13.1, v1.13.2, v1.13.3, v1.13.4, v1.13.5, v1.13.6, v1.13.7 and v1.13.8<br/>v1.12.0, v1.12.1, v1.12.2, v1.12.3, v1.12.4, v1.12.5 and v1.12.6 |
+
 --8<-- "prerequisites.md"
+{% include "security-prereqs-images.md" %}
 
 ## Install the Knative Operator
 
 Before you install the Knative Serving and Eventing components, first install the Knative Operator.
 
-### Install the latest Knative Operator release
+!!! warning
+    Knative Operator 1.5 is the last version that supports CRDs with both `v1alpha1` and `v1beta1`. If you are upgrading an existing Operator install from v1.2 or earlier to v1.3 or later, run the following command to upgrade the existing custom resources to `v1beta1` before installing the current version:
+
+    ```bash
+    kubectl create -f https://github.com/knative/operator/releases/download/knative-v1.5.1/operator-post-install.yaml
+    ```
 
 To install the latest stable Operator release, run the command:
 
@@ -48,19 +60,9 @@ To track the log of the Operator, run the command:
 kubectl logs -f deploy/knative-operator
 ```
 
-### Upgrade the existing custom resources
+## Install Knative Serving
 
-If you are upgrading an existing Operator install from v1.2 (or earlier) to v1.3 (or later), run the following command
-to upgrade the existing custom resources to `v1beta1`:
-
-```bash
-kubectl create -f {{artifact(org="knative",repo="operator",file="operator-post-install.yaml" )}}
-```
-
-## Installing the Knative Serving component
-
-To install Knative Serving you must create a custom resource (CR), add a networking
-layer to the CR, and configure DNS.
+To install Knative Serving you must create a custom resource (CR), add a networking layer to the CR, and configure DNS.
 
 ### Create the Knative Serving custom resource
 
@@ -68,28 +70,28 @@ To create the custom resource for the latest available Knative Serving in the Op
 
 1. Copy the following YAML into a file:
 
-```yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: knative-serving
----
-apiVersion: operator.knative.dev/v1beta1
-kind: KnativeServing
-metadata:
-  name: knative-serving
-  namespace: knative-serving
-```
-!!! note
-   When you don't specify a version by using `spec.version` field, the Operator defaults to the latest available version.
+    ```yaml
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: knative-serving
+    ---
+    apiVersion: operator.knative.dev/v1beta1
+    kind: KnativeServing
+    metadata:
+      name: knative-serving
+      namespace: knative-serving
+    ```
+    !!! note
+        When you don't specify a version by using `spec.version` field, the Operator defaults to the latest available version.
 
 1. Apply the YAML file by running the command:
 
-```bash
-kubectl apply -f <filename>.yaml
-```
+    ```bash
+    kubectl apply -f <filename>.yaml
+    ```
 
-Where `<filename>` is the name of the file you created in the previous step.
+    Where `<filename>` is the name of the file you created in the previous step.
 
 ### Install the networking layer
 
@@ -159,7 +161,10 @@ Knative Serving with different ingresses:
               # ...
               config:
                 istio:
-                  local-gateway.<local-gateway-namespace>.knative-local-gateway: "knative-local-gateway.<istio-namespace>.svc.cluster.local"
+                  local-gateways: |
+                    - name: knative-local-gateway
+                      namespace: <local-gateway-namespace>
+                      service: knative-local-gateway.<istio-namespace>.svc.cluster.local
             ```
 
             Where:
@@ -263,12 +268,13 @@ Knative Serving with different ingresses:
     knative-serving   <version number>    True
     ```
 
+### Configure DNS
 <!-- These are snippets from the docs/snippets directory -->
 {% include "dns.md" %}
 {% include "real-dns-operator.md" %}
-{% include "temporary-dns.md" %}
+{% include "no-dns.md" %}
 
-## Installing the Knative Eventing component
+## Install Knative Eventing
 
 To install Knative Eventing you must apply the custom resource (CR).
 Optionally, you can install the Knative Eventing component with different event sources.
@@ -278,6 +284,76 @@ Optionally, you can install the Knative Eventing component with different event 
 To create the custom resource for the latest available Knative Eventing in the Operator:
 
 1. Copy the following YAML into a file:
+
+    ```yaml
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: knative-eventing
+    ---
+    apiVersion: operator.knative.dev/v1beta1
+    kind: KnativeEventing
+    metadata:
+      name: knative-eventing
+      namespace: knative-eventing
+    ```
+
+    !!! note
+        When you do not specify a version by using `spec.version` field, the Operator defaults to the latest available version.
+
+1. Apply the YAML file by running the command:
+
+    ```bash
+    kubectl apply -f <filename>.yaml
+    ```
+
+Where `<filename>` is the name of the file you created in the previous step.
+
+### Installing a specific version of Eventing
+
+Cluster administrators can install a specific version of Knative Eventing by using the `spec.version` field. For example, if you want to install Knative Eventing v1.7, you can apply the following KnativeEventing CR:
+
+```yaml
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeEventing
+metadata:
+  name: knative-eventing
+  namespace: knative-eventing
+spec:
+  version: "1.7"
+```
+
+You can also run the following command to make the equivalent change:
+
+```bash
+kn operator install --component eventing -v 1.7 -n knative-eventing
+```
+
+If `spec.version` is not specified, the Knative Operator installs the latest available version of Knative Eventing.
+If users specify an invalid or unavailable version, the Knative Operator will do nothing. The Knative Operator always
+includes the latest 3 minor release versions.
+
+If Knative Eventing is already managed by the Operator, updating the `spec.version` field in the KnativeEventing CR enables upgrading or downgrading the Knative Eventing version, without requiring modifications to the Operator.
+
+Note that the Knative Operator only permits upgrades or downgrades by one minor release version at a time. For example, if the current Knative Eventing deployment is version 1.4, you must upgrade to 1.5 before upgrading to 1.6.
+
+### Installing customized Knative Eventing
+
+The Operator provides you with the flexibility to install Knative Eventing customized to your own requirements.
+As long as the manifests of customized Knative Eventing are accessible to the Operator, you can install them.
+
+There are two modes available for you to install customized manifests: _overwrite mode_ and _append mode_.
+With overwrite mode, under `.spec.manifests`, you must define all manifests needed for Knative Eventing
+to install because the Operator will no longer install any default manifests.
+With append mode, under `.spec.additionalManifests`, you only need to define your customized manifests.
+The customized manifests are installed after default manifests are applied.
+
+#### Overwrite mode
+
+Use overwrite mode when you want to customize all Knative Eventing manifests to be installed.
+
+For example, if you want to install a customized Knative Eventing only, you can create and apply the following
+Eventing CR:
 
 ```yaml
 apiVersion: v1
@@ -290,18 +366,51 @@ kind: KnativeEventing
 metadata:
   name: knative-eventing
   namespace: knative-eventing
+spec:
+  version: $spec_version
+  manifests:
+  - URL: https://my-eventing/eventing.yaml
 ```
 
-!!! note
-    When you do not specify a version by using `spec.version` field, the Operator defaults to the latest available version.
+This example installs the customized Knative Eventing at version `$spec_version` which is available at
+`https://my-eventing/eventing.yaml`.
 
-1. Apply the YAML file by running the command:
+!!! attention
+    You can make the customized Knative Eventing available in one or multiple links, as the `spec.manifests` supports a list of links.
+    The ordering of the URLs is critical. Put the manifest you want to apply first on the top.
 
-```bash
-kubectl apply -f <filename>.yaml
+We strongly recommend you to specify the version and the valid links to the customized Knative Eventing, by leveraging
+both `spec.version` and `spec.manifests`. Do not skip either field.
+
+#### Append mode
+
+You can use append mode to add your customized manifests into the default manifests.
+
+For example, if you only want to customize a few resources but you still want to install the default Knative Eventing,
+you can create and apply the following Eventing CR:
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: knative-eventing
+---
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeEventing
+metadata:
+  name: knative-eventing
+  namespace: knative-eventing
+spec:
+  version: $spec_version
+  additionalManifests:
+  - URL: https://my-eventing/eventing-custom.yaml
 ```
 
-Where `<filename>` is the name of the file you created in the previous step.
+This example installs the default Knative Eventing, and installs your customized resources available at
+`https://my-eventing/eventing-custom.yaml`.
+
+Knative Operator installs the default manifests of Knative Eventing at the version `$spec_version`, and then
+installs your customized manifests based on them.
 
 ### Installing Knative Eventing with event sources
 
@@ -325,33 +434,6 @@ see how you can configure Knative Eventing with different event sources:
           # ...
           source:
             ceph:
-              enabled: true
-        ```
-
-    1. Apply the YAML file by running the command:
-
-        ```bash
-        kubectl apply -f <filename>.yaml
-        ```
-
-        Where `<filename>` is the name of the file you created in the previous step.
-
-=== "Apache CouchDB"
-
-    To configure Knative Eventing to install Apache CouchDB as the event source:
-
-    1. Add `spec.source.couchdb` to your Eventing CR YAML file as follows:
-
-        ```yaml
-        apiVersion: operator.knative.dev/v1beta1
-        kind: KnativeEventing
-        metadata:
-          name: knative-eventing
-          namespace: knative-eventing
-        spec:
-          # ...
-          source:
-            couchdb:
               enabled: true
         ```
 
@@ -433,60 +515,6 @@ see how you can configure Knative Eventing with different event sources:
           # ...
           source:
             kafka:
-              enabled: true
-        ```
-
-    1. Apply the YAML file by running the command:
-
-        ```bash
-        kubectl apply -f <filename>.yaml
-        ```
-
-        Where `<filename>` is the name of the file you created in the previous step.
-
-=== "NATS Streaming"
-
-    To configure Knative Eventing to install NATS Streaming as the event source:
-
-    1. Add `spec.source.natss` to your Eventing CR YAML file as follows:
-
-        ```yaml
-        apiVersion: operator.knative.dev/v1beta1
-        kind: KnativeEventing
-        metadata:
-          name: knative-eventing
-          namespace: knative-eventing
-        spec:
-          # ...
-          source:
-            natss:
-              enabled: true
-        ```
-
-    1. Apply the YAML file by running the command:
-
-        ```bash
-        kubectl apply -f <filename>.yaml
-        ```
-
-        Where `<filename>` is the name of the file you created in the previous step.
-
-=== "Prometheus"
-
-    To configure Knative Eventing to install Prometheus as the event source:
-
-    1. Add `spec.source.prometheus` to your Eventing CR YAML file as follows:
-
-        ```yaml
-        apiVersion: operator.knative.dev/v1beta1
-        kind: KnativeEventing
-        metadata:
-          name: knative-eventing
-          namespace: knative-eventing
-        spec:
-          # ...
-          source:
-            prometheus:
               enabled: true
         ```
 

@@ -18,7 +18,6 @@ package main
 
 import (
 	"flag"
-	"io/ioutil"
 	"log"
 	"os"
 	"sort"
@@ -42,7 +41,7 @@ func main() {
 }
 
 func parseYaml() *yamlChannels {
-	fileBytes, err := ioutil.ReadFile(*yamlFile)
+	fileBytes, err := os.ReadFile(*yamlFile)
 	if err != nil {
 		log.Fatalf("Unable to read the YAML file '%s': %v", *yamlFile, err)
 	}
@@ -74,12 +73,12 @@ type channel struct {
 	Name        string `yaml:"name"`
 	Url         string `yaml:"url"`
 	Status      string `yaml:"status"` // TODO Make this an enum.
-	Support     string `yaml:"support"`
+	Maintainer  string `yaml:"maintainer"`
 	Description string `yaml:"description"`
 }
 
 func createTemplate() *template.Template {
-	fileBytes, err := ioutil.ReadFile(*templateFile)
+	fileBytes, err := os.ReadFile(*templateFile)
 	if err != nil {
 		log.Fatalf("Unable to read the template file '%s': %v", *templateFile, err)
 	}

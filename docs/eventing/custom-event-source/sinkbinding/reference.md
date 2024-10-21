@@ -67,7 +67,7 @@ metadata:
   name: bind-heartbeat
 spec:
   subject:
-    apiVersion: batch/v1beta1
+    apiVersion: batch/v1
     kind: Job
     namespace: default
     selector:
@@ -147,4 +147,4 @@ spec:
 [kubernetes-namespaces]:
   https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
 [cloudevents-attribute-naming]:
-  https://github.com/cloudevents/spec/blob/v1.0.1/spec.md#attribute-naming-convention
+  https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md#attribute-naming-convention

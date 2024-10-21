@@ -1,5 +1,8 @@
 # Installing Knative
 
+!!! note
+    Please also take a look at the [Serving Architecture](../serving/architecture.md), which explains the Knative components and the general networking concept.
+
 You can install the Serving component, Eventing component, or both on your
 cluster by using one of the following deployment options:
 
@@ -11,12 +14,12 @@ preconfigured, local distribution of Knative for development purposes.
     - [Install Knative Eventing by using YAML](yaml-install/eventing/install-eventing-with-yaml.md)
 
 - Use the [Knative Operator](operator/knative-with-operators.md) to install and
-configure a production ready deployment.
+configure a production-ready deployment.
 
-- Follow the documentation for vendor managed [Knative offerings](knative-offerings.md).
+- Follow the documentation for vendor-managed [Knative offerings](knative-offerings.md).
 
 You can also [upgrade an existing Knative installation](upgrade/README.md).
 
 !!! note
-    Knative installation instructions assume you are running Mac or Linux with a bash shell.
+    Knative installation instructions assume you are running Mac or Linux with a Bash shell.
 <!-- TODO: Link to provisioning guide for advanced installation -->

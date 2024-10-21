@@ -2,7 +2,7 @@
 
 When you create an event source, you can specify a _sink_ where events are sent to from the source. A sink is an _Addressable_ or a _Callable_ resource that can receive incoming events from other resources. Knative Services, Channels, and Brokers are all examples of sinks.
 
-Addressable objects receive and acknowledge an event delivered over HTTP to an address defined in their `status.address.url` field. As a special case, the core [Kubernetes Service object](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#service-v1-core) also fulfils the Addressable interface.
+Addressable objects receive and acknowledge an event delivered over HTTP to an address defined in their `status.address.url` field. As a special case, the core [Kubernetes Service object](https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/) also fulfils the Addressable interface.
 
 Callable objects are able to receive an event delivered over HTTP and transform the event, returning 0 or 1 new events in the HTTP response. These returned events may be further processed in the same way that events from an external event source are processed.
 
@@ -57,7 +57,7 @@ spec:
 
 To use a Kubernetes custom resource (CR) as a sink for events, you must:
 
-1. Make the CR Addressable. You must ensure that the CR contains a `status.address.url`. For more information, see the spec for [Addressable resources](https://github.com/knative/specs/blob/main/specs/eventing/interfaces.md#addressable).
+1. Make the CR Addressable. You must ensure that the CR contains a `status.address.url`. For more information, see the spec for [Addressable resources](https://github.com/knative/specs/blob/main/specs/eventing/overview.md#addressable).
 
 1. Create an Addressable-resolver ClusterRole to obtain the necessary RBAC rules for the sink to receive events.
 
@@ -126,14 +126,15 @@ kn source binding create bind-heartbeat \
 The `svc` in `http://event-display.svc.cluster.local` determines that the sink is a Knative Service. Other default sink prefixes include Channel and Broker.
 
 !!! tip
-    You can configure which resources can be used with the `--sink` flag for `kn` CLI commands by [Customizing kn](../../install/client/configure-kn.md#example-configuration-file).
+    You can configure which resources can be used with the `--sink` flag for `kn` CLI commands by [customizing `kn`](../../client/configure-kn.md#example-configuration-file).
 
 ## Supported third-party sink types
 
-| Name | Maintainer | Description |
-| -- | -- | -- |
-| [KafkaSink](kafka-sink.md)  | Knative  | Send events to a Kafka topic |
-| [RedisSink](https://github.com/knative-sandbox/eventing-redis/tree/main/sink)  | Knative  | Send events to a Redis Stream |
+| Name                                                                             | Maintainer | Description                          |
+|----------------------------------------------------------------------------------| -- |--------------------------------------|
+| [JobSink](job-sink.md)                                                           | Knative  | Trigger long-running background jobs |
+| [KafkaSink](kafka-sink.md)                                                       | Knative  | Send events to a Kafka topic         |
+| [RedisSink](https://github.com/knative-extensions/eventing-redis/tree/main/sink) | Knative  | Send events to a Redis Stream        |
 
 
 [kubernetes-kinds]:

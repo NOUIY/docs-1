@@ -1,4 +1,4 @@
-# Configure Kafka Channels
+# Configure Channels for Apache Kafka
 
 !!! note
     This guide assumes Knative Eventing is installed in the `knative-eventing` namespace. If you have installed Knative Eventing in a different namespace, replace `knative-eventing` with the name of that namespace.
@@ -62,3 +62,7 @@ To use Kafka Channels, you must:
     kubectl apply -f <filename>.yaml
     ```
     Where `<filename>` is the name of the file you created in the previous step.
+
+## Enable/configure autoscaling of KafkaChannel dispatchers
+
+To enable autoscaling of the KafkaChannel dispatcher you can read [the instructions here](./keda-configuration.md)

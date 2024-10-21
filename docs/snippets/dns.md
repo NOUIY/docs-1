@@ -1,5 +1,3 @@
-### Configure DNS
-
 You can configure DNS to prevent the need to run curl commands with a host header.
 
 The following tabs expand to show instructions for configuring DNS.
@@ -19,4 +17,4 @@ Follow the procedure for the DNS of your choice:
         like minikube unless [`minikube tunnel`](https://minikube.sigs.k8s.io/docs/commands/tunnel/)
         is running.
 
-        In these cases, see the "Real DNS" or "Temporary DNS" tabs.
+        In these cases, see the "Real DNS" or "No DNS" tabs.

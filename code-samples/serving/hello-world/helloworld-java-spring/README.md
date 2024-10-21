@@ -32,10 +32,10 @@ cd knative-docs/code-samples/serving/hello-world/helloworld-java-spring
     unzip helloworld.zip
     ```
 
-    If you don't have `curl` installed, you can accomplish the same by visiting the
-    [Spring Initializr](https://start.spring.io/) page. Specify Artifact as
-    `helloworld` and add the `Web` dependency. Then click **Generate Project**,
-    download and unzip the sample archive.
+   If you don't have `curl` installed, you can accomplish the same by visiting the
+   [Spring Initializr](https://start.spring.io/) page. Specify Artifact as
+   `helloworld` and add the `Web` dependency. Then click **Generate Project**,
+   download and unzip the sample archive.
 
 1. Update the `SpringBootApplication` class in
    `src/main/java/com/example/helloworld/HelloworldApplication.java` by adding a
@@ -74,16 +74,17 @@ cd knative-docs/code-samples/serving/hello-world/helloworld-java-spring
 1. Run the application locally:
 
     ```bash
+    mvn wrapper:wrapper
     ./mvnw package && java -jar target/helloworld-0.0.1-SNAPSHOT.jar
     ```
 
-    Go to `http://localhost:8080/` to see your `Hello World!` message.
+   Go to `http://localhost:8080/` to see your `Hello World!` message.
 
 1. In your project directory, create a file named `Dockerfile` and copy the following code block into it:
 
     ```docker
     # Use the official maven/Java 8 image to create a build artifact: https://hub.docker.com/_/maven
-    FROM maven:3.5-jdk-8-alpine as builder
+    FROM maven:3.5-jdk-8-alpine AS builder
 
     # Copy local code to the container image.
     WORKDIR /app
@@ -105,20 +106,17 @@ cd knative-docs/code-samples/serving/hello-world/helloworld-java-spring
     CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/helloworld.jar"]
 
     ```
-    For detailed instructions on dockerizing a Spring Boot app, see [Spring Boot with Docker](https://spring.io/guides/gs/spring-boot-docker/).
+   For detailed instructions on dockerizing a Spring Boot app, see [Spring Boot with Docker](https://spring.io/guides/gs/spring-boot-docker/).
 
-    For additional information on multi-stage docker builds for Java see [Creating Smaller Java Image using Docker Multi-stage Build](http://blog.arungupta.me/smaller-java-image-docker-multi-stage-build/).
+   For additional information on multi-stage docker builds for Java see [Creating Smaller Java Image using Docker Multi-stage Build](http://blog.arungupta.me/smaller-java-image-docker-multi-stage-build/).
 
 1. Use Docker to build the sample code into a container, then push the container to the Docker registry:
 
     ```bash
-    # Build the container on your local machine
-    docker build -t {username}/helloworld-java-spring .
-
-    # Push the container to docker registry
-    docker push {username}/helloworld-java-spring
+    # Build and push the container on your local machine.
+    docker buildx build --platform linux/arm64,linux/amd64 -t "{username}/helloworld-java-spring" --push .
     ```
-    Where `{username}` is your Docker Hub username.
+   Where `{username}` is your Docker Hub username.
 
 
 ## Deploying the app
@@ -131,77 +129,76 @@ During the creation of a Service, Knative performs the following steps:
 - Network programming to create a Route, ingress, Service, and load balancer for your app.
 - Automatically scale your pods up and down, including scaling down to zero active pods.
 
-To deploy the app:
+Choose one of the following methods to deploy the app:
 
-=== "YAML"
+### yaml
 
-    1. Create a new file named `service.yaml` and copy the following service definition
-    into the file:
+1. Create a new file named `service.yaml` and copy the following service definition
+   into the file:
 
-        ```yaml
-        apiVersion: serving.knative.dev/v1
-        kind: Service
-        metadata:
-          name: helloworld-java-spring
-          namespace: default
+    ```yaml
+    apiVersion: serving.knative.dev/v1
+    kind: Service
+    metadata:
+      name: helloworld-java-spring
+      namespace: default
+    spec:
+      template:
         spec:
-          template:
-            spec:
-              containers:
-                - image: docker.io/{username}/helloworld-java-spring
-                  env:
-                    - name: TARGET
-                      value: "Spring Boot Sample v1"
-        ```
-        Where `{username}` is your Docker Hub username.
+          containers:
+            - image: docker.io/{username}/helloworld-java-spring
+              env:
+                - name: TARGET
+                  value: "Spring Boot Sample v1"
+    ```
+    Where `{username}` is your Docker Hub username.
 
-        **Note:** Ensure that the container image value in `service.yaml` matches the container you built in the previous step.
+    **Note:** Ensure that the container image value in `service.yaml` matches the container you built in the previous step.
 
-    1. Apply the YAML file by running the command:
+1. Apply the YAML file by running the command:
 
-        ```bash
-        kubectl apply -f service.yaml
-        ```
+    ```bash
+    kubectl apply -f service.yaml
+    ```
 
-=== "kn"
+### kn
 
-       With `kn` you can deploy the service with
+1. With `kn` you can deploy the service with
 
-       ```bash
-       kn service create helloworld-java-spring --image=docker.io/{username}/helloworld-java-spring --env TARGET="Spring Boot Sample v1"
-       ```
+    ```bash
+    kn service create helloworld-java-spring --image=docker.io/{username}/helloworld-java-spring --env TARGET="Spring Boot Sample v1"
+    ```
 
-       This will wait until your service is deployed and ready, and ultimately it will print the URL through which you can access the service.
-
+    This will wait until your service is deployed and ready, and ultimately it will print the URL through which you can access the service.
 
 ## Verification
 
 1. Find the domain URL for your service:
 
-    === "kubectl"
-           ```bash
-           kubectl get ksvc helloworld-java-spring  --output=custom-columns=NAME:.metadata.name,URL:.status.url
-           ```
+    - For kubectl, run:
 
-           Example:
+    ```bash
+    kubectl get ksvc helloworld-java-spring  --output=custom-columns=NAME:.metadata.name,URL:.status.url
+    ```
 
-           ```bash
-           NAME                      URL
-           helloworld-java-spring    http://helloworld-java-spring.default.1.2.3.4.xip.io
-           ```
+    Example:
 
+    ```bash
+    NAME                      URL
+    helloworld-java-spring    http://helloworld-java-spring.default.1.2.3.4.xip.io
+    ```
 
-    === "kn"
+    - For kn, run:
 
-           ```bash
-           kn service describe helloworld-java-spring -o url
-           ```
+    ```bash
+    kn service describe helloworld-java-spring -o url
+    ```
 
-           Example:
+    Example:
 
-           ```bash
-           http://helloworld-java-spring.default.1.2.3.4.xip.io
-           ```
+    ```bash
+    http://helloworld-java-spring.default.1.2.3.4.xip.io
+    ```
 
 1. Make a request to your app and observe the result. Replace
    the following URL with the URL returned in the previous command.
@@ -220,14 +217,14 @@ To deploy the app:
 
 ## Deleting the app
 
-To remove the sample app from your cluster, delete the service.
+To remove the sample app from your cluster, delete the service:
 
-=== "kubectl"
-    ```bash
-    kubectl delete -f service.yaml
-    ```
+### kubectl
+```bash
+kubectl delete -f service.yaml
+```
 
-=== "kn"
-    ```bash
-    kn service delete helloworld-java-spring
-    ```
+### kn
+```bash
+kn service delete helloworld-java-spring
+```

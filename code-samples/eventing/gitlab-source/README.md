@@ -17,11 +17,11 @@ You will need:
 
 ### Install GitLab Event Source
 
-GitLab Event source lives in the [knative-sandbox/eventing-gitlab](https://github.com/knative-sandbox/eventing-gitlab). Head to the releases page, find the latest release with `gitlab.yaml`
+GitLab Event source lives in the [knative-extensions/eventing-gitlab](https://github.com/knative-extensions/eventing-gitlab). Head to the releases page, find the latest release with `gitlab.yaml`
 artifact and replace the `<RELEASE>` with version tag:
 
 ```bash
-kubectl apply -f https://github.com/knative-sandbox/eventing-gitlab/releases/download/<RELEASE>/gitlab.yaml
+kubectl apply -f https://github.com/knative-extensions/eventing-gitlab/releases/download/<RELEASE>/gitlab.yaml
 ```
 
 Check that the manager is running:
@@ -74,7 +74,7 @@ kubectl -n default apply -f event-display.yaml
 ### Create GitLab Tokens
 
 1. Create a
-   [personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+   [project access token](https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html)
    which the GitLab source will use to register webhooks with the GitLab API.
    The token must have an "api" access scope in order to create repository
    webhooks. Also decide on a secret token that your source will use to
@@ -153,7 +153,7 @@ kubectl -n default apply -f event-display.yaml
 ### Verify
 
 Verify that GitLab webhook was created by looking at the list of webhooks under
-**Settings >> Integrations** in your GitLab project. A hook should be listed
+**Settings >> Webhooks** in your GitLab project. A hook should be listed
 that points to your Knative cluster.
 
 Create a push event and check the logs of the Pod backing the

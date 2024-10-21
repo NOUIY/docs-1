@@ -1,6 +1,7 @@
 # Creating a PingSource object
 
-![API version v1](https://img.shields.io/badge/API_Version-v1-green?style=flat-square)
+![stage](https://img.shields.io/badge/Stage-stable-green?style=flat-square)
+![version](https://img.shields.io/badge/API_Version-v1-green?style=flat-square)
 
 This topic describes how to create a PingSource object.
 
@@ -16,7 +17,7 @@ To create a PingSource:
 
 - You must install [Knative Eventing](../../../install/yaml-install/eventing/install-eventing-with-yaml.md).
 The PingSource event source type is enabled by default when you install Knative Eventing.
-- You can use either `kubectl` or [`kn`](../../../install/client/install-kn.md) commands
+- You can use either `kubectl` or [`kn`](../../../client/install-kn.md) commands
 to create components such as a sink and PingSource.
 - You can use either `kubectl` or [`kail`](https://github.com/boz/kail) for logging
 during the verification step in this procedure.
@@ -114,8 +115,30 @@ during the verification step in this procedure.
 
             - `<pingsource-name>` is the name of the PingSource that you want to create, for example, `test-ping-source`.
             - `<namespace>` is the name of the namespace that you created in step 1 above.
-            - `<cron-schedule>` is a cron expression for the schedule for the PingSource to send events, for example, `*/1 * * * *` sends an event every minute.
+            - `<cron-schedule>` is a cron expression for the schedule for the PingSource to send events, for example, `*/1 * * * *` sends an event every minute. Both [standard](https://en.wikipedia.org/wiki/Cron) and [Quartz Scheduler](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/tutorial-lesson-06.html) cron formats are supported, with the latter supporting a seconds field.
             - `<data>` is the data you want to send. This data must be represented as text, not binary. For example, a JSON object such as `{"message": "Hello world!"}`.
+            - `<sink-name>` is the name of your sink, for example, `http://event-display.pingsource-example.svc.cluster.local`.
+
+            For a list of available options, see the [Knative client documentation](https://github.com/knative/client/blob/main/docs/cmd/kn_source_ping_create.md).
+
+    === "kn: binary data"
+
+        - To create a PingSource that sends binary data, run the command:
+
+            ```bash
+            kn source ping create <pingsource-name> \
+              --namespace <namespace> \
+              --schedule "<cron-schedule>" \
+              --data '<base64-data>' \
+              --encoding 'base64' \
+              --sink <sink-name>
+            ```
+            Where:
+
+            - `<pingsource-name>` is the name of the PingSource that you want to create, for example, `test-ping-source`.
+            - `<namespace>` is the name of the namespace that you created in step 1 above.
+            - `<cron-schedule>` is a cron expression for the schedule for the PingSource to send events, for example, `*/1 * * * *` sends an event every minute. Both [standard](https://en.wikipedia.org/wiki/Cron) and [Quartz Scheduler](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/tutorial-lesson-06.html) cron formats are supported, with the latter supporting a seconds field.
+            -  `<base64-data>` is the base64 encoded binary data that you want to send, for example, `ZGF0YQ==`.
             - `<sink-name>` is the name of your sink, for example, `http://event-display.pingsource-example.svc.cluster.local`.
 
             For a list of available options, see the [Knative client documentation](https://github.com/knative/client/blob/main/docs/cmd/kn_source_ping_create.md).
@@ -147,10 +170,10 @@ during the verification step in this procedure.
 
                 - `<pingsource-name>` is the name of the PingSource that you want to create, for example, `test-ping-source`.
                 - `<namespace>` is the name of the namespace that you created in step 1 above.
-                - `<cron-schedule>` is a cron expression for the schedule for the PingSource to send events, for example, `*/1 * * * *` sends an event every minute.
+                - `<cron-schedule>` is a cron expression for the schedule for the PingSource to send events, for example, `*/1 * * * *` sends an event every minute. Both [standard](https://en.wikipedia.org/wiki/Cron) and [Quartz Scheduler](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/tutorial-lesson-06.html) cron formats are supported, with the latter supporting a seconds field.
                 - `<content-type>` is the media type of the data you want to send, for example, `application/json`.
                 - `<data>` is the data you want to send. This data must be represented as text, not binary. For example, a JSON object such as `{"message": "Hello world!"}`.
-                - `<sink-kind>` is any supported [Addressable](../../../reference/concepts/duck-typing.md#addressable) object that you want to use as a sink, for example, `Service` or `Deployment`.
+                - `<sink-kind>` is any supported Addressable object that you want to use as a sink, for example, a `Service` or `Deployment`.
                 - `<sink-name>` is the name of your sink, for example, `event-display`.
 
                 For more information about the fields you can configure for the PingSource object, see [PingSource reference](reference.md).
@@ -188,15 +211,15 @@ during the verification step in this procedure.
 
                 - `<pingsource-name>` is the name of the PingSource that you want to create, for example, `test-ping-source-binary`.
                 - `<namespace>` is the name of the namespace that you created in step 1 above.
-                - `<cron-schedule>` is a cron expression for the schedule for the PingSource to send events, for example, `*/1 * * * *` sends an event every minute.
+                - `<cron-schedule>` is a cron expression for the schedule for the PingSource to send events, for example, `*/1 * * * *` sends an event every minute. Both [standard](https://en.wikipedia.org/wiki/Cron) and [Quartz Scheduler](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/tutorial-lesson-06.html) cron formats are supported, with the latter supporting a seconds field.
                 - `<content-type>` is the media type of the data you want to send, for example, `application/json`.
                 - `<base64-data>` is the base64 encoded binary data that you want to send, for example, `ZGF0YQ==`.
-                - `<sink-kind>` is any supported [Addressable](../../../reference/concepts/duck-typing.md#addressable) object that you want to use as a sink, for example, `Service` or `Deployment`.
+                - `<sink-kind>` is any supported Addressable object that you want to use as a sink, for example, a Kubernetes Service.
                 - `<sink-name>` is the name of your sink, for example, `event-display`.
 
                 For more information about the fields you can configure for the PingSource object, see [PingSource reference](reference.md).
 
-            1. Apply the YAML file by running the command:
+            2. Apply the YAML file by running the command:
 
                 ```bash
                 kubectl apply -f <filename>.yaml

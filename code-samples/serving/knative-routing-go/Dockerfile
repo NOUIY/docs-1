@@ -12,16 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang AS builder
+FROM golang:latest AS builder
 
-WORKDIR /go/src/github.com/knative/docs/
-ADD . /go/src/github.com/knative/docs/
+ARG TARGETOS
+ARG TARGETARCH
 
-RUN CGO_ENABLED=0 go build ./code-samples/serving/knative-routing-go/
+# Create and change to the app directory.
+WORKDIR /app
+
+# Copy local code to the container image.
+COPY . ./
+
+# Install dependencies and tidy up the go.mod and go.sum files.
+RUN go mod tidy
+
+# Build the binary.
+# -mod=readonly ensures immutable go.mod and go.sum in container builds.
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o sample
 
 FROM gcr.io/distroless/base
 
 EXPOSE 8080
-COPY --from=builder /go/src/github.com/knative/docs/knative-routing-go /sample
+COPY --from=builder /app/sample /sample
 
 ENTRYPOINT ["/sample"]

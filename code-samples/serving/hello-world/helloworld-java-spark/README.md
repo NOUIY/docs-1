@@ -29,6 +29,7 @@ cd knative-docs/code-samples/serving/hello-world/helloworld-java
 1. Run the application locally:
 
    ```bash
+   mvn wrapper:wrapper
    ./mvnw package && java -jar target/helloworld-0.0.1-SNAPSHOT-jar-with-dependencies.jar
    ```
 
@@ -64,62 +65,52 @@ cd knative-docs/code-samples/serving/hello-world/helloworld-java
 1. To build the sample code into a container, and push using Docker Hub, enter the following commands and replace `{username}` with your Docker Hub username:
 
    ```bash
-   # Build the container on your local machine
-   docker build -t {username}/helloworld-java .
-   # Push the container to docker registry
-   docker push {username}/helloworld-java
+   # Build and push the container on your local machine.
+   docker buildx build --platform linux/arm64,linux/amd64 -t "{username}/helloworld-java" --push .
    ```
 
 ## Deploy
 
-1. After the build has completed and the container is pushed to Docker Hub, you
-   can deploy the app into your cluster. Choose one of the following methods:
+After the build has completed and the container is pushed to Docker Hub, you can deploy the app into your cluster. Choose one of the following methods:
 
+### kn
 
-=== "kn"
+ 1. Use `kn` to deploy the service, make sure to replace `{username}` with your Docker Hub username:
 
-       Use `kn` to deploy the service, make sure to replace `{username}` with your Docker Hub username:
-
-       ```bash
-       kn service create helloworld-java --image=docker.io/{username}/helloworld-java --env TARGET="SparkJava Sample v1"
-       ```
+ ```bash
+ kn service create helloworld-java --image=docker.io/{username}/helloworld-java --env TARGET="SparkJava Sample v1"
+ ```
 
        This will wait until your service is deployed and ready, and ultimately it will print the URL through which you can access the service.
 
 
-=== "kubectl"
+### kubectl
 
-       1. Create a new file, `service.yaml` and copy the following service definition
-          into the file. Make sure to replace `{username}` with your Docker Hub
-          username.
+ 1. Create a new file, `service.yaml` and copy the following service definition into the file. Make sure to replace `{username}` with your Docker Hub username.
 
-          ```yaml
-          apiVersion: serving.knative.dev/v1
-          kind: Service
-          metadata:
-            name: helloworld-java
-            namespace: default
-          spec:
-            template:
-              spec:
-                containers:
-                  - image: docker.io/{username}/helloworld-java
-                    env:
-                      - name: TARGET
-                        value: "SparkJava Sample v1"
-          ```
+ ```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+      name: helloworld-java
+      namespace: default
+spec:
+      template:
+        spec:
+          containers:
+            - image: docker.io/{username}/helloworld-java
+              env:
+                - name: TARGET
+                  value: "SparkJava Sample v1"
+ ```
 
-       1. Ensure that the container image value in `service.yaml` matches the container you built in the previous step. Apply the configuration using `kubectl`:
+ 1. Ensure that the container image value in `service.yaml` matches the container you built in the previous step. Apply the configuration using `kubectl`:
 
-       ```bash
-       kubectl apply --filename service.yaml
-       ```
+ ```bash
+ kubectl apply --filename service.yaml
+ ```
 
-
-
-
-
-   After your service is created, Knative will perform the following steps:
+After your service is created, Knative will perform the following steps:
 
    - Create a new immutable revision for this version of the app.
    - Network programming to create a route, ingress, service, and load balance
@@ -128,62 +119,56 @@ cd knative-docs/code-samples/serving/hello-world/helloworld-java
 
 ## Verify
 
-1. Run one of the followings commands to find the domain URL for your service.
+ 1. Run one of the followings commands to find the domain URL for your service.
 
+ ### kn
 
-=== "kn"
+ ```bash
+ kn service describe helloworld-java -o url
+  ```
 
-       ```bash
-       kn service describe helloworld-java -o url
-       ```
+ Example:
 
-       Example:
+ ```bash
+ http://helloworld-java.default.1.2.3.4.xip.io
+  ```
 
-       ```bash
-       http://helloworld-java.default.1.2.3.4.xip.io
-       ```
+ ### kubectl
+ ```bash
+  kubectl get ksvc helloworld-java  --output=custom-columns=NAME:.metadata.name,URL:.status.url
+ ```
 
-=== "kubectl"
-       ```bash
-       kubectl get ksvc helloworld-java  --output=custom-columns=NAME:.metadata.name,URL:.status.url
-       ```
+ Example:
 
-       Example:
+ ```bash
+ NAME                      URL
+ helloworld-java    http://helloworld-java.default.1.2.3.4.xip.io
+ ```
 
-       ```bash
-       NAME                      URL
-       helloworld-java    http://helloworld-java.default.1.2.3.4.xip.io
-       ```
-
-
-
-
-
-1. Now you can make a request to your app and see the result. Replace
+2. Now you can make a request to your app and see the result. Replace
    the following URL with the URL returned in the previous command.
 
-   Example:
+ Example:
 
-   ```bash
-   curl http://helloworld-java.default.1.2.3.4.sslip.io
-   Hello SparkJava Sample v1!
-   # Even easier with kn:
-   curl $(kn service describe helloworld-java -o url)
-   ```
+ ```bash
+ curl http://helloworld-java.default.1.2.3.4.sslip.io
+ Hello SparkJava Sample v1!
+ # Even easier with kn:
+ curl $(kn service describe helloworld-java -o url)
+ ```
 
    > Note: Add `-v` option to get more detail if the `curl` command failed.
 
 ## Delete
 
-To remove the sample app from your cluster, delete the service record.
+To remove the sample app from your cluster, delete the service record:
 
+### kn
+ ```bash
+ kn service delete helloworld-java
+ ```
 
-=== "kn"
-    ```bash
-    kn service delete helloworld-java
-    ```
-
-=== "kubectl"
-    ```bash
-    kubectl delete --filename service.yaml
-    ```
+### kubectl
+ ```bash
+ kubectl delete --filename service.yaml
+ ```

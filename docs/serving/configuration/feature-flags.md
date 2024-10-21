@@ -27,7 +27,7 @@ Allowed
 Disabled
 : The feature cannot be used.
 
-## Lifecyle
+## Lifecycle
 
 When features and extensions are introduced to Knative, they follow a lifecycle of three stages:
 
@@ -98,11 +98,41 @@ spec:
     spec:
       containers:
         - name: first-container
-          image: gcr.io/knative-samples/helloworld-go
+          image: ghcr.io/knative/helloworld-go:latest
           ports:
             - containerPort: 8080
         - name: second-container
           image: gcr.io/knative-samples/helloworld-java
+```
+
+### Multiple Container Probing
+
+* **Type**: Feature
+* **ConfigMap key:** `multi-container-probing`
+
+This flag allows specifying probes (readiness/liveness) for multiple containers in a Knative Service spec.
+Please use this feature flag in combination with [multiple containers](#multiple-containers) above.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      containers:
+        - name: first-container
+          image: ghcr.io/knative/helloworld-go:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              port: 8080
+        - name: second-container
+          image: gcr.io/knative-samples/helloworld-java
+          readinessProbe:
+            httpGet:
+              port: 8090
 ```
 
 ### Kubernetes EmptyDir Volume
@@ -258,7 +288,7 @@ spec:
     spec:
       containers:
         - name: user-container
-          image: gcr.io/knative-samples/helloworld-go
+          image: ghcr.io/knative/helloworld-go:latest
           env:
             - name: MY_NODE_NAME
               valueFrom:
@@ -295,20 +325,20 @@ When this extension is `enabled`, the server always runs this validation.
 
 When this extension is `allowed`, the server does not run this validation by default.
 
-When this extension is `allowed`, you can run this validation for individual Services, by adding the `features.knative.dev/podspec-dryrun":"enabled"` annotation:
+When this extension is `allowed`, you can run this validation for individual Services, by adding the `features.knative.dev/podspec-dryrun: enabled` annotation:
 
 ```yaml
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  annotations: features.knative.dev/podspec-dryrun":"enabled"
+  annotations: features.knative.dev/podspec-dryrun: enabled
 ...
 ```
 
 ### Kubernetes runtime class
 
 * **Type**: Extension
-* **ConfigMap key:** `kubernetes.podspec-runtimeclass`
+* **ConfigMap key:** `kubernetes.podspec-runtimeclassname`
 
 This flag controls whether the [runtime class](https://kubernetes.io/docs/concepts/containers/runtime-class/) can be used.
 
@@ -377,7 +407,7 @@ spec:
  template:
   spec:
    containers:
-     - image: gcr.io/knative-samples/helloworld-go
+     - image: ghcr.io/knative/helloworld-go:latest
        env:
          - name: TARGET
            value: "Go Sample v1"
@@ -413,5 +443,168 @@ spec:
         - name: init-myservice
           image: busybox
           command: ['sh', '-c', "service_setup.sh"]
+...
+```
+
+### Queue Proxy Pod Info
+
+* **Type**: Extension
+* **ConfigMap key:** `queueproxy.mount-podinfo`
+
+You must set this feature to either "enabled or "allowed" when using QPOptions. The flag controls whether Knative mounts the `pod-info` volume to the `queue-proxy` container.
+
+Mounting the `pod-info` volume allows extensions that use QPOptions to access the Service annotations, by reading the `/etc/podinfo/annnotations` file. See [Extending Queue Proxy image with QPOptions](../queue-extensions.md) for more details.
+
+When this feature is `enabled`, the `pod-info` volume is always mounted. This is helpful in case where all or most of the cluster Services are required to use extensions that rely on QPOptions.
+
+When this feature is `allowed`, the `pod-info` volume is not mounted by default. Instead, the volume is mounted only for Services that add the `features.knative.dev/queueproxy-podinfo: enabled` annotation as shown below:
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations: features.knative.dev/queueproxy-podinfo: enabled
+...
+```
+
+### Kubernetes Topology Spread Constraints
+
+* **Type**: Extension
+* **ConfigMap key:** `kubernetes.podspec-topologyspreadconstraints`
+
+This flag controls whether [`topology spread constraints`](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/) can be specified.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      ...
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: node
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            foo: bar
+...
+```
+
+### Kubernetes DNS Policy
+
+* **Type**: Extension
+* **ConfigMap key:** `kubernetes.podspec-dnspolicy`
+
+This flag controls whether a [`DNS policy`](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/) can be specified.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      dnsPolicy: ClusterFirstWithHostNet
+...
+```
+
+### Kubernetes Scheduler Name
+
+* **Type**: Extension
+* **ConfigMap key:** `kubernetes.podspec-schedulername`
+
+This flag controls whether a [`scheduler name`](https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/) can be specified.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      ...
+      schedulerName: custom-scheduler-example
+...
+```
+
+### Kubernetes Share Process Namespace
+
+* **Type**: Extension
+* **ConfigMap key:** `kubernetes.podspec-shareprocessnamespace`
+
+This flag controls whether the [share process namespace](https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/) can be used.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      ...
+      shareProcessNamespace: true
+...
+```
+
+!!! warning
+
+    `shareProcessNamespace` and `hostPID` cannot both be set.
+
+### Kubernetes Host IPC
+
+* **Type**: Extension
+* **ConfigMap key:** `kubernetes.podspec-hostipc`
+
+This flag controls whether the host's ipc namespace can be used.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      ...
+      hostIPC: true
+...
+```
+
+### Kubernetes Host PID
+
+* **Type**: Extension
+* **ConfigMap key:** `kubernetes.podspec-hostpid`
+
+This flag controls whether the host's pid can be used.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      ...
+      hostPID: true
+...
+```
+
+### Kubernetes Host Network
+
+* **Type**: Extension
+* **ConfigMap key:** `kubernetes.podspec-hostnetwork`
+
+This flag controls whether the host's network namespace can be used.
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+...
+spec:
+  template:
+    spec:
+      ...
+      hostNetwork: true
 ...
 ```

@@ -1,7 +1,7 @@
 # Copyright 2022 The Knative Authors.
 # SPDX-License-Identifier: Apache-2.0
 
-# This file is automagically synced here from github.com/knative-sandbox/knobots
+# This file is automagically synced here from github.com/knative-extensions/knobots
 
 name: Test
 
@@ -14,4 +14,6 @@ on:
 
 jobs:
   test:
-    uses: knative/actions/.github/workflows/go-test.yaml@main
+    uses: knative/actions/.github/workflows/reusable-go-test.yaml@main
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

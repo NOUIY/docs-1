@@ -1,47 +1,45 @@
-# Apache Kafka Source
+# Knative Source for Apache Kafka
 
-Tutorial on how to build and deploy a `KafkaSource` event source.
+![stage](https://img.shields.io/badge/Stage-stable-green?style=flat-square)
+![version](https://img.shields.io/badge/API_Version-v1beta1-yellow?style=flat-square)
 
-## Background
 
-The `KafkaSource` reads all the messages, from all partitions, and sends those messages as CloudEvents through HTTP to its configured `sink`. The `KafkaSource` supports an ordered consumer delivery guaranty, which is a per-partition blocking consumer that waits for a successful response from the CloudEvent subscriber before it delivers the next message of the partition.
+The `KafkaSource` reads messages stored in existing [Apache Kafka](https://kafka.apache.org) topics, and sends those messages as CloudEvents through HTTP to its configured `sink`. The `KafkaSource` preserves the order of the messages
+stored in the topic partitions. It does this by waiting for a successful response from the `sink` before it delivers the next message in the same partition.
+## Install the KafkaSource controller
 
-<!--TODO: Check if this note is out of scope; should we not mention anything beyond the direct Knative/Kafka integration we provide?-->
-
-## Installing Kafka source
-
-1. Install the Kafka controller by entering the following command:
+1. Install the `KafkaSource` controller by entering the following command:
 
     ```bash
-    kubectl apply --filename {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
+    kubectl apply -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
     ```
 
 1. Install the Kafka Source data plane by entering the following command:
 
     ```bash
-    kubectl apply --filename {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-source.yaml") }}
+    kubectl apply -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-source.yaml") }}
     ```
 
 1. Verify that `kafka-controller` and `kafka-source-dispatcher` are running,
    by entering the following command:
 
     ```bash
-    kubectl get deployments.apps -n knative-eventing
+    kubectl get deployments.apps,statefulsets.apps -n knative-eventing
     ```
 
     Example output:
     ```{ .bash .no-copy }
-    NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-    kafka-controller               1/1     1            1           3s
-    kafka-source-dispatcher        1/1     1            1           4s
+    NAME                                           READY   UP-TO-DATE   AVAILABLE   AGE
+    deployment.apps/kafka-controller               1/1     1            1           3s
+   
+    NAME                                       READY   AGE
+    statefulset.apps/kafka-source-dispatcher   1/1     3s
     ```
 
-## Create a Kafka topic
+## Optional: Create a Kafka topic
 
 !!! note
-    The create a Kafka topic section assumes you're using Strimzi to operate Apache Kafka,
-    however equivalent operations can be replicated using the Apache Kafka CLI or any
-    other tool.
+    The create a Kafka topic section assumes you're using Strimzi to operate Apache Kafka, however equivalent operations can be replicated using the Apache Kafka CLI or any other tool.
 
 If you are using Strimzi:
 
@@ -83,8 +81,8 @@ If you are using Strimzi:
 
     Example output:
     ```{ .bash .no-copy }
-    NAME                 AGE
-    knative-demo-topic   16s
+    NAME                 CLUSTER      PARTITIONS   REPLICATION FACTOR
+    knative-demo-topic   my-cluster   3            1
     ```
 
 ## Create a Service
@@ -175,6 +173,43 @@ If you are using Strimzi:
     kafka-source   ["knative-demo-topic"]   ["my-cluster-kafka-bootstrap.kafka:9092"]   True             26h
     ```
 
+### Scaling 
+
+To schedule more or fewer consumers, a KafkaSource can be scaled, and they can be allocated to different dispatcher pods. The kafkasource status displays such allocation under the status.placements key.
+
+You can scale a KafkaSource with kubectl by using the following notation:
+
+```bash
+kubectl scale kafkasource -n <ns> <kafkasource-name> --replicas=<number-of-replicas> # e.g. 12 replicas for a topic with 12 partitions
+```
+
+Alternatively, if you are using a GitOps approach, you can add the `consumers` key as shown in the example below and commit it to your repository:
+
+```yaml
+
+    apiVersion: sources.knative.dev/v1beta1
+    kind: KafkaSource
+    metadata:
+      name: kafka-source
+    spec:
+      consumerGroup: knative-group
+      bootstrapServers:
+      - my-cluster-kafka-bootstrap.kafka:9092 
+      consumers: 12    # Number of replicas
+      topics:
+      - knative-demo-topic
+      sink:
+        ref:
+          apiVersion: serving.knative.dev/v1
+          kind: Service
+          name: event-display
+
+```
+
+### Automatic Scaling with KEDA
+
+You are able to autoscale the KafkaSource with KEDA. For information on how to enable and configure this feature, please read [the instructions here](../../configuration/keda-configuration.md).
+
 ### Verify
 
 1. Produce a message (`{"msg": "This is a test!"}`) to the Apache Kafka topic as in the following example:
@@ -212,40 +247,40 @@ If you are using Strimzi:
         }
     ```
 
-## Clean up steps
+## Handling Delivery Failures
 
-1. Delete the Kafka event source:
+The `KafkaSource` implements the `Delivery` Specificiation, allowing you to configure event delivery parameters for it, which are applied in cases where an event fails to be delivered:
 
-    ```bash
-    kubectl delete -f source/source.yaml kafkasource.sources.knative.dev
-    ```
+```yaml
 
-    Example output:
-    ```{ .bash .no-copy }
-    "kafka-source" deleted
-    ```
+    apiVersion: sources.knative.dev/v1beta1
+    kind: KafkaSource
+    metadata:
+      name: kafka-source
+    spec:
+      consumerGroup: knative-group
+      bootstrapServers:
+      - my-cluster-kafka-bootstrap.kafka:9092 # note the kafka namespace
+      topics:
+      - knative-demo-topic
+      delivery:
+        deadLetterSink:
+          ref:
+            apiVersion: serving.knative.dev/v1
+            kind: Service
+            name: example-sink
+        backoffDelay: <duration>
+        backoffPolicy: <policy-type>
+        retry: <integer>
+      sink:
+        ref:
+          apiVersion: serving.knative.dev/v1
+          kind: Service
+          name: event-display
 
-2. Delete the `event-display` Service:
+```
 
-    ```bash
-    kubectl delete -f source/event-display.yaml service.serving.knative.dev
-    ```
-
-    Example output:
-    ```{ .bash .no-copy }
-    "event-display" deleted
-    ```
-
-4. Optional: Remove the Apache Kafka Topic
-
-    ```bash
-    kubectl delete -f kafka-topic.yaml
-    ```
-
-    Example output:
-    ```{ .bash .no-copy }
-    kafkatopic.kafka.strimzi.io "knative-demo-topic" deleted
-    ```
+The `delivery` API is discussed in the [Handling Delivery Failure](../../event-delivery) chapter.
 
 ## Optional: Specify the key deserializer
 
@@ -363,4 +398,102 @@ KafkaSource expects these files to be in PEM format. If they are in another form
          apiVersion: serving.knative.dev/v1
          kind: Service
          name: event-display
+    ```
+
+## Enabling SASL for KafkaSources
+
+Simple Authentication and Security Layer (SASL) is used by Apache Kafka for authentication. If you use SASL authentication on your cluster, users must provide credentials to Knative for communicating with the Kafka cluster, otherwise events cannot be produced or consumed.
+
+### Prerequisites
+
+- You have access to a Kafka cluster that has Simple Authentication and Security Layer (SASL).
+
+### Procedure
+
+1. Create a secret that uses the Kafka cluster's SASL information, by running the following commands:
+
+    ```bash
+    {% raw %}STRIMZI_CRT=$(kubectl -n kafka get secret example-cluster-cluster-ca-cert --template='{{index.data "ca.crt"}}' | base64 --decode ){% endraw %}
+    ```
+
+    ```bash
+    {% raw %}SASL_PASSWD=$(kubectl -n kafka get secret example-user --template='{{index.data "password"}}' | base64 --decode ){% endraw %}
+    ```
+
+    ```bash
+    kubectl create secret -n default generic <secret_name> \
+        --from-literal=ca.crt="$STRIMZI_CRT" \
+        --from-literal=password="$SASL_PASSWD" \
+        --from-literal=saslType="SCRAM-SHA-512" \
+        --from-literal=user="example-user"
+    ```
+
+1. Create or modify a KafkaSource so that it contains the following spec options:
+
+    ```yaml
+    apiVersion: sources.knative.dev/v1beta1
+    kind: KafkaSource
+    metadata:
+      name: example-source
+    spec:
+    ...
+      net:
+        sasl:
+          enable: true
+          user:
+            secretKeyRef:
+              name: <secret_name>
+              key: user
+          password:
+            secretKeyRef:
+              name: <secret_name>
+              key: password
+          type:
+            secretKeyRef:
+              name: <secret_name>
+              key: saslType
+        tls:
+          enable: true
+          caCert:
+            secretKeyRef:
+              name: <secret_name>
+              key: ca.crt
+    ...
+    ```
+
+    Where `<secret_name>` is the name of the secret generated in the previous step.
+
+## Clean up steps
+
+1. Delete the Kafka event source:
+
+    ```bash
+    kubectl delete -f source/source.yaml kafkasource.sources.knative.dev
+    ```
+
+    Example output:
+    ```{ .bash .no-copy }
+    "kafka-source" deleted
+    ```
+
+2. Delete the `event-display` Service:
+
+    ```bash
+    kubectl delete -f source/event-display.yaml service.serving.knative.dev
+    ```
+
+    Example output:
+    ```{ .bash .no-copy }
+    "event-display" deleted
+    ```
+
+4. Optional: Remove the Apache Kafka Topic
+
+    ```bash
+    kubectl delete -f kafka-topic.yaml
+    ```
+
+    Example output:
+    ```{ .bash .no-copy }
+    kafkatopic.kafka.strimzi.io "knative-demo-topic" deleted
     ```

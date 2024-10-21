@@ -1,6 +1,35 @@
 plugins:
   redirects:
     redirect_maps:
+      contributing/about.md: community/README.md
+      eventing/experimental-features/README.md: eventing/features/README.md
+      eventing/experimental-features/delivery-timeout.md: eventing/features/delivery-timeout.md
+      eventing/experimental-features/delivery-retryafter.md: eventing/features/delivery-retryafter.md
+      eventing/experimental-features/new-trigger-filters.md: eventing/triggers/README.md
+      eventing/experimental-features/kreference-group.md: eventing/features/kreference-group.md
+      eventing/experimental-features/kreference-mapping.md: eventing/features/kreference-mapping.md
+      eventing/experimental-features/eventtype-auto-creation.md: eventing/features/eventtype-auto-creation.md
+      eventing/experimental-features/transport-encryption.md: eventing/features/transport-encryption.md
+      eventing/experimental-features/sender-identity.md: eventing/features/sender-identity.md
+      eventing/experimental-features/authorization.md: eventing/features/authorization.md
+      eventing/features/new-trigger-filters.md: eventing/triggers/README.md
+      eventing/broker/kafka-broker/kafka-configmap.md: eventing/configuration/kafka-channel-configuration.md
+      eventing/broker/create-mtbroker.md: eventing/brokers/create-broker.md
+      eventing/broker/example-mtbroker.md: eventing/brokers/broker-developer-config-options.md
+      eventing/broker/kafka-broker/README.md: eventing/brokers/broker-types/kafka-broker/README.md
+      eventing/broker/rabbitmq-broker/README.md: eventing/brokers/broker-types/rabbitmq-broker/README.md
+      eventing/broker/README.md: eventing/brokers/README.md
+      concepts/resources/revisions.md: concepts/serving-resources/revisions.md
+      serving/revision-gc.md: serving/revisions/revision-developer-config-options.md
+      serving/configuration/revision-gc.md: serving/revisions/revision-admin-config-options.md
+      reference/concepts/duck-typing.md: concepts/duck-typing.md
+      reference/client/README.md: client/README.md
+      reference/api/eventing-api.md: eventing/reference/eventing-api.md
+      reference/api/serving-api.md: serving/reference/serving-api.md
+      community/about.md: community/governance.md
+      contributing/contributing.md: community/contributing.md
+      contributing/README.md: community/README.md
+      eventing/getting-started.md: getting-started/getting-started-eventing.md
       admin/collecting-logs/README.md: serving/observability/logging/collecting-logs.md
       admin/collecting-metrics/README.md: serving/observability/metrics/collecting-metrics.md
       admin/collecting-metrics/eventing-metrics/metrics.md: eventing/observability/metrics/eventing-metrics.md
@@ -25,24 +54,19 @@ plugins:
       admin/serving/config-defaults.md: serving/configuration/config-defaults.md
       admin/serving/deployment.md: serving/configuration/deployment.md
       admin/serving/feature-flags.md: serving/configuration/feature-flags.md
-      admin/serving/revision-gc.md: serving/configuration/revision-gc.md
       admin/serving/rolling-out-latest-revision-configmap.md: serving/configuration/rolling-out-latest-revision-configmap.md
       admin/upgrade/index.md: install/upgrade/README.md
       admin/upgrade/upgrade-installation-with-operator.md: install/upgrade/upgrade-installation-with-operator.md
       admin/upgrade/upgrade-installation.md: install/upgrade/upgrade-installation.md
       check-install-version.md: install/upgrade/check-install-version.md
-      client/README.md: install/client/README.md
-      client/configure-kn.md: install/client/configure-kn.md
-      client/connecting-kn-to-your-cluster/index.md: install/client/README.md
-      client/install-kn.md: install/client/install-kn.md
-      client/kn-plugins.md: install/client/kn-plugins.md
+      client/connecting-kn-to-your-cluster/index.md: client/README.md
       community/annual_reports.md: https://github.com/knative/community/tree/main/annual_reports
       community/calendar.md: https://github.com/knative/community/blob/main/CALENDAR.MD
       community/contributing/code-of-conduct.md: https://github.com/knative/community/blob/main/CODE-OF-CONDUCT.md
       community/contributing/contributing.md: https://github.com/knative/community/blob/main/CONTRIBUTING.md
       community/contributing/governance.md: https://github.com/knative/community/blob/main/GOVERNANCE.md
       community/contributing/mechanics.md: https://github.com/knative/community/tree/main/mechanics
-      community/contributing/mechanics/creating-a-sandbox-repo.md: https://github.com/knative/community/blob/main/mechanics/CREATING-A-SANDBOX-REPO.md
+      community/contributing/mechanics/creating-an-extensions-repo.md: https://github.com/knative/community/blob/main/mechanics/CREATING-AN-EXTENSIONS-REPO.md
       community/contributing/mechanics/feature-tracks.md: https://github.com/knative/community/blob/main/mechanics/FEATURE-TRACKS.md
       community/contributing/mechanics/golang-policy.md: https://github.com/knative/community/blob/main/mechanics/GOLANG-POLICY.md
       community/contributing/mechanics/release-schedule.md: https://github.com/knative/community/blob/main/mechanics/RELEASE-SCHEDULE.md
@@ -60,15 +84,14 @@ plugins:
       community/contributing/trademark-committee.md: https://github.com/knative/community/blob/main/TRADEMARK-COMMITTEE.md
       community/contributing/values.md: https://github.com/knative/community/blob/main/VALUES.md
       community/contributing/working-groups/working-groups.md: https://github.com/knative/community/blob/main/working-groups
-      community/meetup.md: community/contributing.md
+      community/meetup.md: community/README.md
       community/samples.md: https://github.com/knative/docs/tree/main/code-samples/community
       concepts/overview.md: index.md
-      developer/concepts/duck-typing.md: reference/concepts/duck-typing.md
+      developer/concepts/duck-typing.md: concepts/duck-typing.md
       developer/eventing/event-delivery.md: eventing/event-delivery.md
       developer/eventing/sinks/README.md: eventing/sinks/README.md
       developer/eventing/sinks/kafka-sink.md: eventing/sinks/kafka-sink.md
       developer/eventing/sources/README.md: eventing/sources/README.md
-      developer/eventing/sources/apache-camel-source/README.md: eventing/sources/apache-camel-source/README.md
       developer/eventing/sources/apiserversource/README.md: eventing/sources/apiserversource/README.md
       developer/eventing/sources/apiserversource/getting-started.md: eventing/sources/apiserversource/getting-started.md
       developer/eventing/sources/apiserversource/reference.md: eventing/sources/apiserversource/reference.md
@@ -81,7 +104,7 @@ plugins:
       developer/eventing/sources/creating-event-sources/writing-event-source/04-reconciler.md: eventing/custom-event-source/custom-event-source/receive-adapter.md
       developer/eventing/sources/creating-event-sources/writing-event-source/05-receive-adapter.md: eventing/custom-event-source/custom-event-source/receive-adapter.md
       developer/eventing/sources/creating-event-sources/writing-event-source/06-yaml.md: eventing/custom-event-source/custom-event-source/publish-event-source.md
-      developer/eventing/sources/creating-event-sources/writing-event-source/07-knative-sandbox.md: eventing/custom-event-source/custom-event-source/README.md
+      developer/eventing/sources/creating-event-sources/writing-event-source/07-knative-extensions.md: eventing/custom-event-source/custom-event-source/README.md
       developer/eventing/sources/creating-event-sources/writing-event-source/README.md: eventing/custom-event-source/custom-event-source/README.md
       developer/eventing/sources/kafka-source/README.md: eventing/sources/kafka-source/README.md
       developer/eventing/sources/ping-source/README.md: eventing/sources/ping-source/README.md
@@ -92,7 +115,7 @@ plugins:
       developer/serving/deploying-from-private-registry.md: serving/deploying-from-private-registry.md
       developer/serving/rolling-out-latest-revision.md: serving/rolling-out-latest-revision.md
       developer/serving/services/README.md: serving/services/README.md
-      developer/serving/services/byo-certificate.md: serving/services/byo-certificate.md
+      developer/serving/services/byo-certificate.md: serving/services/custom-tls-certificate-domain-mapping.md
       developer/serving/services/certificate-class.md: serving/services/certificate-class.md
       developer/serving/services/configure-requests-limits-services.md: serving/services/configure-requests-limits-services.md
       developer/serving/services/creating-services.md: serving/services/creating-services.md
@@ -104,16 +127,14 @@ plugins:
       developer/serving/tag-resolution.md: serving/tag-resolution.md
       developer/serving/traffic-management.md: serving/traffic-management.md
       developer/serving/troubleshooting/debugging-application-issues.md: serving/troubleshooting/debugging-application-issues.md
-      eventing/broker/alternate/index.md: eventing/broker/README.md
+      eventing/broker/alternate/index.md: eventing/brokers/README.md
       eventing/broker/broker-event-delivery.md: eventing/event-delivery.md
       eventing/broker/configmaps/README.md: eventing/configuration/broker-configuration.md
-      eventing/broker/kafka-broker/kafka-configmap.md: eventing/configuration/kafka-channel-configuration.md
       eventing/channels/default-channels/index.md: eventing/channels/README.md
       eventing/debugging/README.md: eventing/troubleshooting/README.md
       eventing/metrics.md: eventing/observability/metrics/eventing-metrics.md
       eventing/parallel.md: eventing/flows/parallel.md
       eventing/samples/README.md: samples/eventing.md
-      eventing/samples/apache-camel-source/index.md: eventing/sources/apache-camel-source/README.md
       eventing/samples/cloud-audit-logs-source/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/cloud-audit-logs-source
       eventing/samples/cloud-pubsub-source/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/cloud-pubsub-source
       eventing/samples/cloud-scheduler-source/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/cloud-scheduler-source
@@ -126,7 +147,6 @@ plugins:
       eventing/samples/helloworld/helloworld-python/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/helloworld/helloworld-python
       eventing/samples/kafka/binding/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/kafka/binding
       eventing/samples/kafka/channel/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/kafka/channel
-      eventing/samples/kafka/resetoffset/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/kafka/resetoffset
       eventing/samples/kubernetes-event-source/index.md: eventing/sources/apiserversource/README.md
       eventing/samples/parallel/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/parallel
       eventing/samples/parallel/multiple-branches/README.md: https://github.com/knative/docs/tree/main/code-samples/eventing/parallel/multiple-branches
@@ -144,7 +164,6 @@ plugins:
       eventing/sink/kafka-sink.md: eventing/sinks/kafka-sink.md
       eventing/sources/containersource.md: eventing/custom-event-source/containersource/README.md
       eventing/sources/pingsource/index.md: eventing/sources/ping-source/README.md
-      eventing/triggers/index.md: eventing/broker/triggers/README.md
       install/collecting-logs/index.md: serving/observability/logging/collecting-logs.md
       install/collecting-metrics/index.md: serving/observability/metrics/collecting-metrics.md
       install/eventing/eventing-installation-files.md: install/yaml-install/eventing/eventing-installation-files.md
@@ -159,7 +178,7 @@ plugins:
       install/serving/serving-installation-files.md: install/yaml-install/serving/serving-installation-files.md
       operator/configuring-eventing-cr/index.md: install/operator/configuring-eventing-cr.md
       operator/configuring-serving-cr/index.md: install/operator/configuring-serving-cr.md
-      reference/resources/index.md: install/client/README.md
+      reference/resources/index.md: client/README.md
       serving/autoscaling/autoscaling-concepts.md: serving/autoscaling/autoscaler-types.md
       serving/autoscaling/target-burst-capacity/index.md: serving/load-balancing/target-burst-capacity.md
       serving/configuring-autoscaling/index.md: serving/autoscaling/README.md
@@ -200,6 +219,9 @@ plugins:
       serving/services/deployment.md: serving/configuration/deployment.md
       serving/services/http-option.md: serving/services/http-protocol.md
       serving/spec/knative-api-specification-1.0.md: https://github.com/knative/specs/blob/main/specs/serving/knative-api-specification-1.0.md
-      serving/using-an-ssl-cert/index.md: serving/using-a-tls-cert.md
+      serving/using-an-ssl-cert/index.md: serving/encryption/encryption-overview.md
+      serving/encryption/enabling-automatic-tls-certificate-provisioning.md: serving/encryption/encryption-overview.md
+      serving/encryption/using-certificates-in-networking-layer.md: serving/encryption/encryption-overview.md
       serving/using-subroutes.md: serving/traffic-management.md
-      about/case-studies/README.md: about/case-studies/deepc.md
+      eventing/brokers/create-mtbroker.md: eventing/brokers/create-broker.md
+      eventing/brokers/broker-admin-config-options.md: eventing/configuration/broker-configuration.md

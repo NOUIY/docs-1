@@ -39,17 +39,6 @@ Uninstall any Serving extensions you have installed by performing the steps in t
     [cert-manager documentation](https://cert-manager.io/docs/installation/uninstall/kubernetes/).
 
 
-
-=== "TLS via HTTP01"
-
-    Uninstall the `net-http01` controller by running:
-
-    ```bash
-    kubectl delete -f {{ artifact( repo="net-http01", file="release.yaml") }}
-    ```
-
-
-
 ### Uninstalling a networking layer
 
 Follow the relevant procedure to uninstall the networking layer you installed:
@@ -113,13 +102,13 @@ Follow the relevant procedure to uninstall the networking layer you installed:
 1. Uninstall the Serving core components by running:
 
     ```
-    kubectl delete -f https://storage.googleapis.com/knative-nightly/serving/latest/serving-core.yaml
+    kubectl delete -f {{ artifact(repo="serving",file="serving-core.yaml")}}
     ```
 
 1. Uninstall the required custom resources by running:
 
     ```
-    kubectl delete -f https://storage.googleapis.com/knative-nightly/serving/latest/serving-crds.yaml
+    kubectl delete -f {{ artifact(repo="serving",file="serving-crds.yaml")}}
     ```
 
 
@@ -134,24 +123,14 @@ Uninstall any Eventing extensions you have installed by following the relevant p
     1. Uninstall the Kafka Sink data plane:
 
         ```bash
-        kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-sink.yaml") }}
+        kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-sink.yaml") }}
         ```
 
     1. Uninstall the Kafka controller:
 
         ```bash
-        kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
+        kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
         ```
-
-
-
-=== "Sugar Controller"
-
-    Uninstall the Eventing Sugar Controller by running:
-
-    ```bash
-    kubectl delete -f {{ artifact( repo="eventing", file="eventing-sugar-controller.yaml") }}
-    ```
 
 
 
@@ -160,13 +139,13 @@ Uninstall any Eventing extensions you have installed by following the relevant p
     Uninstall a single-tenant GitHub source by running:
 
     ```bash
-    kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-github", file="github.yaml") }}
+    kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-github", file="github.yaml") }}
     ```
 
     Uninstall a multi-tenant GitHub source by running:
 
     ```bash
-    kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-github", file="mt-github.yaml") }}
+    kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-github", file="mt-github.yaml") }}
     ```
 
 
@@ -176,7 +155,7 @@ Uninstall any Eventing extensions you have installed by following the relevant p
     Uninstall the Apache Kafka source by running:
 
     ```bash
-    kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-kafka", file="source.yaml") }}
+    kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-source.yaml") }}
     ```
 
 
@@ -196,7 +175,7 @@ Uninstall any Eventing extensions you have installed by following the relevant p
     Uninstall the Apache CouchDB source by running:
 
     ```bash
-    kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-couchdb", file="couchdb.yaml") }}
+    kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-couchdb", file="couchdb.yaml") }}
     ```
 
 
@@ -226,13 +205,13 @@ Uninstall a Broker (Eventing) layer, if you installed one:
     1. Uninstall the Kafka Broker data plane by running the following command:
 
         ```bash
-        kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-broker.yaml") }}
+        kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-broker.yaml") }}
         ```
 
     1. Uninstall the Kafka controller by running the following command:
 
         ```bash
-        kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
+        kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-kafka-broker", file="eventing-kafka-controller.yaml") }}
         ```
 
 
@@ -263,9 +242,7 @@ Uninstall each channel layer you have installed:
     Uninstall the Apache Kafka Channel by running:
 
        ```bash
-       curl -L "{{ artifact(org="knative-sandbox", repo="eventing-kafka", file="channel-consolidated.yaml") }}" \
-        | sed 's/REPLACE_WITH_CLUSTER_URL/my-cluster-kafka-bootstrap.kafka:9092/' \
-        | kubectl delete -f -
+       kubectl delete -f {{ artifact(org="knative-extensions",repo="eventing-kafka-broker",file="eventing-kafka-channel.yaml")}}
        ```
 
        <!-- Ideally write steps for uninstalling Apache Kafka for Kubernetes here. -->
@@ -297,10 +274,10 @@ Uninstall each channel layer you have installed:
     1. Uninstall the NATS Streaming channel by running:
 
         ```bash
-        kubectl delete -f {{ artifact(org="knative-sandbox", repo="eventing-natss", file="eventing-natss.yaml") }}
+        kubectl delete -f {{ artifact(org="knative-extensions", repo="eventing-natss", file="eventing-natss.yaml") }}
         ```
 
-    1. Uninstall NATS Streaming for Kubernetes. For more information, see the [eventing-natss](https://github.com/knative-sandbox/eventing-natss/tree/main/config) repository in GitHub.
+    1. Uninstall NATS Streaming for Kubernetes. For more information, see the [eventing-natss](https://github.com/knative-extensions/eventing-natss/tree/main/config) repository in GitHub.
 
 
 
@@ -315,13 +292,13 @@ Uninstall each channel layer you have installed:
 1. Uninstall the Eventing core components by running:
 
     ```
-    kubectl delete -f https://storage.googleapis.com/knative-nightly/eventing/latest/eventing-core.yaml
+    kubectl delete -f {{ artifact(repo="eventing",file="eventing-core.yaml")}}
     ```
 
 1. Uninstall the required custom resources by running:
 
     ```
-    kubectl delete -f https://storage.googleapis.com/knative-nightly/eventing/latest/eventing-crds.yaml
+    kubectl delete -f {{ artifact(repo="eventing",file="eventing-crds.yaml")}}
     ```
 
 

@@ -1,12 +1,6 @@
----
-title: "Highlighting the Value of Knative for the C-Suite"
-linkTitle: "Highlighting the Value of Knative for the C-Suite"
-date: 2021-11-04
-description: "Deploy faster and more cost-effectively without hard-to-find, specialized expertise."
-type: "blog"
----
-
 # Highlighting the Value of Knative for the C-Suite
+
+**Authors: [Carlos Santana](https://twitter.com/csantanapr) (IBM) and [Omer Bensaadon](https://twitter.com/omer_bensaadon) (VMware)**
 
 <table style="border: 0;">
 <tr style="background-color: var(--md-default-bg-color);">
@@ -143,7 +137,7 @@ Knative Eventing expands the possibilities for event-driven architecture. Applic
 <li><b>Conformance</b> Knative is now conformant, meaning that the latest version has validation tools available. It does what it says it can do and it can prove it.
 <li><b><a href="https://knative.dev/docs/about/case-studies/deepc/">Case Studies</a></b> Read about organizations using Knative, from platform developers to proven companies to innovative startups.
 <li><b><a href="https://knative.dev/docs/getting-started">View the getting started guide</a></b> to get up and running with Knative in an afternoon
-<li><b><a href="https://slack.knative.dev">Join the Knative Slack</a></b> to talk to the community.
+<li><b><a href="https://slack.cncf.io">Join the CNCF Slack</a></b> to talk to the community on the `#knative` channel.
 </ul>
 
 </td>
